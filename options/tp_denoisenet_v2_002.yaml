@@ -1,0 +1,124 @@
+save_mode: epoch
+save_by_epoch: 1
+save_by_iter: 10000
+cudnn_benchmark: True                   # True for unchanged input data type
+
+# Training parameters
+Training_config:
+  phase: denoise
+  epochs: 150                           # number of epochs of training
+  train_batch_size: 1                   # size of the training batches for single GPU
+  val_batch_size: 1                     # size of the validation batches for single GPU
+  num_workers: 16
+  start_idx: 0
+  show_loss_iter: 100
+  show_img_iter: 2000
+
+DeblurNet:
+  name: 'DeblurNet_v2'
+  init_type: 'xavier'
+  init_gain: 0.02
+  finetune_path: 'snapshot/tp_deblurnet_v2_002/GNet/GNet-epoch-99.pkl'
+  force_load: False
+  args:
+    in_channel: 3
+    out_channel: 3
+    activ: 'lrelu'
+    norm: 'none'
+    ngf: 32
+    deblur_res_num: 4
+    deblur_res_num2: 4
+    final_activ: 'none'
+    pad_type: 'zero'
+    upsample_layer: 'pixelshuffle'
+    shuffle_mode: 'caffe'
+
+DenoiseNet:
+  name: 'DenoiseNet_v2'
+  init_type: 'xavier'
+  init_gain: 0.02
+  finetune_path: ''
+  force_load: False
+  args:
+    in_channel: 3
+    out_channel: 3
+    activ: 'lrelu'
+    norm: 'none'
+    ngf: 32
+    denoise_res_num: 4
+    denoise_res_num2: 4
+    groups: 8
+    final_activ: 'none'
+    pad_type: 'zero'
+    upsample_layer: 'pixelshuffle'
+    shuffle_mode: 'caffe'
+
+# DNet:
+#   name: 'PatchDiscriminator70'
+#   init_type: 'xavier'
+#   init_gain: 0.02
+#   args:
+#     in_channels: 6
+#     out_channels: 3
+#     start_channels: 64
+#     activ_d: 'lrelu'
+#     norm: 'none'
+#     pad: "reflect"
+
+Loss:
+  L1Loss:
+    weight: 100.
+    mode: 'l1'
+  VGGLoss:
+    weight: 1.                          # user can set it to 0
+    args:
+      vgg_model_path: ./pretrained_models/vgg16-397923af.pth
+
+Optimizer:
+  name: 'Adam'
+  args:
+    lr_g: 0.00005
+    lr_d: 0.00005
+    b1: 0.5
+    b2: 0.999
+    weight_decay: 0.0
+  lr_decrease_mode: 'epoch'
+  lr_decrease_epoch: 50
+  lr_decrease_iter: 10000
+  lr_decrease_factor: 0.5
+
+
+Dataset:
+  train_path: './data/original/train'
+  val_path: './data/original/val_no_overlap'
+  train_sharp_path: './data/sharpened/train'
+  val_sharp_path: './data/sharpened/val_no_overlap'
+  # train_path: '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/data_1440p/original/train'
+  # val_path: '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/data_1440p/original/val_no_overlap'
+  # train_sharp_path: '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/data_1440p/sharpened/train'
+  # val_sharp_path: '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/data_1440p/sharpened/val_no_overlap'
+  blur_path:
+    patch_num: 1
+    train_path: './data/original/train_blur_patch'
+    val_path: './data/original/val_no_overlap_blur_patch'
+    train_sharp_path: './data/sharpened/train_blur_patch'
+    val_sharp_path: './data/sharpened/val_no_overlap_blur_patch'
+  noise_aug: False
+  shot_noise: True
+  shot_short_iso: [6400, 12800]
+  shot_long_iso: [1000, 4000]
+  shot_noise_mode: 'mi_note10'
+  noise_level: 0.03
+  random_crop: True
+  deblur_crop_size: 1024
+  deblur_patch_per_image: 1
+  deblur_size: 512
+  denoise_patch_per_image: 2
+  denoise_crop_size: 256
+  cutblur:
+    prob: 0.3
+    size: 120
+  darken:
+    prob: 0.3
+  color_distor:
+    prob: 0.5
