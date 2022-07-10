@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+
 def resize_img(imgs, size):
     """
     imgs: list of numpy array(NHWC) or numpy array(NHWC)
@@ -10,13 +11,13 @@ def resize_img(imgs, size):
         for i in range(len(imgs)):
             resize_imgs.append([])
             for j in range(imgs[i].shape[0]):
-                resize_imgs[i].append(cv2.resize(imgs[i][j], (size, size), interpolation=cv2.INTER_AREA))
+                resize_imgs[i].append(cv2.resize(imgs[i][j], (size, size), interpolation = cv2.INTER_AREA))
             resize_imgs[i] = np.array(resize_imgs[i])
         return tuple(resize_imgs)
     elif isinstance(imgs, np.ndarray):
         resize_imgs = []
         for i in range(len(imgs)):
-            resize_imgs.append(cv2.resize(imgs[i], (size, size), interpolation=cv2.INTER_AREA))
+            resize_imgs.append(cv2.resize(imgs[i], (size, size), interpolation = cv2.INTER_AREA))
         resize_imgs = np.array(resize_imgs)
 
         return resize_imgs

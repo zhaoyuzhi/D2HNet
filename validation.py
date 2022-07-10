@@ -94,9 +94,9 @@ def TwoPhase_Val(args):
     
     # Define the network
     if opt.Training_config.phase == 'deblur':
-        deblurNet = create_generator_val(opt.DeblurNet, args.model_path, force_load=False)
+        deblurNet = create_generator_val(opt.DeblurNet, args.model_path, force_load = False)
     elif opt.Training_config.phase == 'denoise':
-        denoiseNet = create_generator_val(opt.DenoiseNet, args.model_path, force_load=True)
+        denoiseNet = create_generator_val(opt.DenoiseNet, args.model_path, force_load = True)
         deblurNet = create_generator_val(opt.DeblurNet, opt.DeblurNet.finetune_path)
         for param in deblurNet.parameters():
             param.requires_grad = False
@@ -115,7 +115,7 @@ def TwoPhase_Val(args):
     print('The overall number of validation images:', len(val_dataset))
 
     # Define the dataloader
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=0)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size = 1, shuffle = False, num_workers = 0)
     
     # Initialize
     utils.check_path(args.save_path)
@@ -139,7 +139,7 @@ def TwoPhase_Val(args):
             
             deblur_out = deblurNet(down_short_img, down_long_img)
             deblur_out_residual = deblur_out - down_long_img
-            deblur_out = F.interpolate(deblur_out, size=(short_img.shape[2], short_img.shape[3]), mode='bilinear', align_corners=False)
+            deblur_out = F.interpolate(deblur_out, size = (short_img.shape[2], short_img.shape[3]), mode = 'bilinear', align_corners = False)
 
             if opt.Training_config.phase == 'denoise':
 
@@ -218,21 +218,23 @@ if __name__ == "__main__":
         default = './options/tp_denoisenet_v2_002.yaml', \
             help='Path to option YAML file.')
     parser.add_argument('--model_path', type = str, \
-        default = './snapshot/tp_denoisenet_v2_002/GNet/GNet-official.pkl', \
+        default = './snapshot/tp_denoisenet_v2_002/GNet/GNet-epoch-149.pkl', \
             help = 'Model path to load.')
     parser.add_argument('--val_path', type = str, \
-        default = './data/slrgb2rgb_simulated_mobile_phone/val_no_overlap_noisy_', \
+        default = './data/original/val_no_overlap_noisy_', \
+        #default = '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/data_1440p/original/val_no_overlap_noisy_', \
             help = 'Image path to read.')
     parser.add_argument('--val_res', type = int, default = 1440, help = 'validation resolution')
     parser.add_argument('--val_sharp_path', type = str, \
-        default = './data/slrgb2rgb_simulated_mobile_phone_sharp/val_no_overlap', \
+        default = './data/sharpened/val_no_overlap', \
+        #default = '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/data_1440p/sharpened/val_no_overlap', \
             help = 'Image path to ground truth.')
     parser.add_argument('--save_path', type = str, \
         default = './results_validation/tp_denoisenet_v2_002', \
             help = 'Path to save images.')
     parser.add_argument('--num_gpus', type = int, default = 1, help = 'GPU number, 0 means cpu is used.')
     parser.add_argument('--down_img_size', type = int, default = 1024, help = 'down_img_size')
-    parser.add_argument('--enable_patch', type = bool, default = False, help = 'enable patch process, please set True if out of memory.')
+    parser.add_argument('--enable_patch', type = bool, default = True, help = 'enable patch process, please set True if out of memory.')
     parser.add_argument('--patch_size', type = int, default = 1024, help = 'patch size.')
     parser.add_argument('--save_deblur', type = bool, default = False)
     parser.add_argument('--save_residual', type = bool, default = False)

@@ -12,8 +12,8 @@ from util import utils
 from . import augmentation as DA
 from .utils import resize_img, read_img
 
+
 def build_train_file_set(namelist, gt_postfix = '_short'):
-    # namelist = utils.get_jpgs_once(basepath)
     shortlist = []
     long8list = []
     long6list = []
@@ -35,8 +35,8 @@ def build_train_file_set(namelist, gt_postfix = '_short'):
             gtlist.append(namelist[i] + gt_postfix + '.png')
     return shortlist, long8list, long6list, long4list, long2list, gtlist
 
+
 def build_file_set(namelist, gt_postfix = '_short'):
-    # namelist = utils.get_jpgs_once(basepath)
     shortlist = []
     longlist = []
     gtlist = []
@@ -48,6 +48,7 @@ def build_file_set(namelist, gt_postfix = '_short'):
             longlist.append(namelist[i] + '_long8.png')
             gtlist.append(namelist[i] + gt_postfix + '.png')
     return shortlist, longlist, gtlist
+
 
 def add_train_sharp_file(shortlist, long8list, long6list, long4list, long2list, gtlist, src_dir, sharp_dir):
     short, long8, long6, long4, long2, gt = [], [], [], [], [], []
@@ -67,6 +68,7 @@ def add_train_sharp_file(shortlist, long8list, long6list, long4list, long2list, 
     long2 += long2list
     gt += gtlist
     return short, long8, long6, long4, long2, gt
+
 
 def add_sharp_file(shortlist, longlist, gtlist, src_dir, sharp_dir):
     short, long_, gt = [], [], []
@@ -96,7 +98,7 @@ class SLRGB2RGB_dataset(data.Dataset):
             namelist = utils.get_jpgs_once(self.opt.train_path)
             shortlist, long8list, long6list, long4list, long2list, gtlist = build_train_file_set(namelist, gt_postfix = gt_postfix)
             
-            # 添加sharp数据
+            # Add the sharpened data if it exists
             if hasattr(self.opt, 'train_sharp_path'):
                 shortlist, long8list, long6list, long4list, long2list, gtlist = \
                     add_train_sharp_file(shortlist, long8list, long6list, long4list, long2list, gtlist, self.opt.train_path, self.opt.train_sharp_path)
@@ -111,7 +113,7 @@ class SLRGB2RGB_dataset(data.Dataset):
             namelist = utils.get_jpgs_once(self.opt.val_path)
             shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix = gt_postfix)
             
-            # 添加sharp数据
+            # Add the sharpened data if it exists
             if hasattr(self.opt, 'val_sharp_path'):
                 shortlist, longlist, gtlist = \
                     add_sharp_file(shortlist, longlist, gtlist, self.opt.val_path, self.opt.val_sharp_path)
@@ -120,7 +122,7 @@ class SLRGB2RGB_dataset(data.Dataset):
             self.in_long_filelist = longlist
             self.out_srgb_filelist = gtlist
 
-        # 离线截取好的blur图像块，目的是为了平衡数据样本不均衡的问题
+        # Get the blur patch
         if hasattr(self.opt, 'blur_path'):
             if tag == 'train':
                 namelist = utils.get_blur_file_once(self.opt.blur_path.train_path)
@@ -151,7 +153,7 @@ class SLRGB2RGB_dataset(data.Dataset):
             
             print('%s === Blur files: %d' % (tag, len(self.blur_short_filelist)))
         
-    # generate random number
+    # Generate random number
     def random_crop_start(self, h, w, crop_size, min_divide):
         rand_h = random.randint(0, h - crop_size)
         rand_w = random.randint(0, w - crop_size)
@@ -271,7 +273,7 @@ class SLRGB2RGB_dataset(data.Dataset):
             in_long_path = self.in_long_filelist[index]
         out_srgb_path = self.out_srgb_filelist[index]
 
-        # patch_per_image为0，只用blur patch训练
+        # if patch_per_image = 0, only using blur patch for training
         if (self.opt.random_crop and hasattr(self.opt, 'patch_per_image') and self.opt.patch_per_image == 0):
             in_short_img, in_long_img, out_srgb_img = None, None, None
         else:
@@ -292,12 +294,12 @@ class SLRGB2RGB_dataset(data.Dataset):
             in_long_img = in_long_img.astype(np.float) / 255.0
             out_srgb_img = out_srgb_img.astype(np.float) / 255.0
 
-            if hasattr(self.opt, 'color_distor') and self.opt.color_distor:
-                in_short_img = DA.color_distortion(in_short_img, self.opt.color_distor.prob)
+            if hasattr(self.opt, 'color_adjust') and self.opt.color_adjust:
+                in_short_img = DA.color_adjustment(in_short_img, self.opt.color_adjust.prob)
 
-            if hasattr(self.opt, 'darken') and self.tag == "train":
+            if hasattr(self.opt, 'illum_adjust') and self.tag == "train":
                 if 'day' in in_short_path:
-                    darken_images = DA.darken(np.array([in_short_img, in_long_img, out_srgb_img]), dark_prob = self.opt.darken.prob)
+                    darken_images = DA.illum_adjustment(np.array([in_short_img, in_long_img, out_srgb_img]), dark_prob = self.opt.illum_adjust.prob)
                     in_short_img = darken_images[0]
                     in_long_img = darken_images[1]
                     out_srgb_img = darken_images[2]
@@ -328,17 +330,17 @@ class SLRGB2RGB_dataset(data.Dataset):
                     in_short_img = np.clip(in_short_img, 0, 1)
                     in_long_img = np.clip(in_long_img, 0, 1)
 
-            if hasattr(self.opt, 'cutblur') and self.tag == "train":
-                in_short_img = DA.cutblur(in_short_img, out_srgb_img, self.opt.cutblur.size, self.opt.cutblur.prob)
-                if hasattr(self.opt.cutblur, 'long') and self.opt.cutblur.long:
-                    in_long_img = DA.cutblur(in_long_img, out_srgb_img, self.opt.cutblur.size, self.opt.cutblur.prob)
+            if hasattr(self.opt, 'cutnoise') and self.tag == "train":
+                in_short_img = DA.cutnoise(in_short_img, out_srgb_img, self.opt.cutnoise.size, self.opt.cutnoise.prob)
+                if hasattr(self.opt.cutnoise, 'long') and self.opt.cutnoise.long:
+                    in_long_img = DA.cutnoise(in_long_img, out_srgb_img, self.opt.cutnoise.size, self.opt.cutnoise.prob)
 
-        # 获取blur patch，为了保证输出tensor大小一致，只有在random_crop生效的时候才会启用
+        # Get blur patches. It is only used when random_crop is True
         if hasattr(self.opt, 'blur_path') and self.opt.random_crop:
             # NHWC
             in_short_blur_patches, in_long_blur_patches, out_blur_patches, gt_long_blur_patches = self.get_blur_patch(crop_size = crop_size)
 
-            # 和原图crop的图片合并
+            # Combine blur patches with cropped patches from the original full-resolution images
             if out_srgb_img is None:
                 out_srgb_img = out_blur_patches
                 in_short_img = in_short_blur_patches
@@ -441,8 +443,6 @@ class SLRGB2RGB_valdataset(data.Dataset):
             in_long_img = np.clip(in_long_img, 0, 1)
 
         # to tensor
-        # in_img = np.concatenate((in_short_img, in_long_img), axis = 2)
-        # in_img = torch.from_numpy(in_img).float().permute(2, 0, 1).contiguous()
         out_srgb_img = torch.from_numpy(out_srgb_img).float().permute(2, 0, 1).contiguous()
 
         in_short_img = torch.from_numpy(in_short_img).float().permute(2, 0, 1).contiguous()
@@ -474,11 +474,6 @@ def get_dataset_pngs(path):
                     ret_long.append(tmp_files[0])
                     ret_short.append(tmp_files[1])
                     tmp_files = []
-                # if i % 2 == 0:
-                #     ret_long.append(os.path.join(root, filespath))
-                # if i % 2 == 1:
-                #     ret_short.append(os.path.join(root, filespath))
-                # i = i + 1
     return ret_long, ret_short
 
 
@@ -560,7 +555,7 @@ class TP_dataset(SLRGB2RGB_dataset):
 
     def crop_tensor_patch(self, tensors):
         """
-        对deblur后的tensor进行crop
+        crop the output of DeblurNet
         tensors: list or Tensor
         """
         if hasattr(self.opt, 'denoise_patch_per_image'):
@@ -573,10 +568,8 @@ class TP_dataset(SLRGB2RGB_dataset):
             N, _, H, W = tensors[0].shape
             for _ in range(patch_per_image):
                 ranh_h, rand_w = self.random_crop_start(H, W, self.opt.denoise_crop_size, 2)
-                # for i in range(N):
                 for j, tensor in enumerate(tensors):
                     crop_tensor = tensor[:, :, ranh_h:ranh_h+self.opt.denoise_crop_size, rand_w:rand_w+self.opt.denoise_crop_size]
-                    # ret_tensors[j].append(crop_tensor.unsqueeze(0))
                     ret_tensors[j].append(crop_tensor)
             
             for i in range(len(ret_tensors)):
@@ -589,17 +582,17 @@ class TP_dataset(SLRGB2RGB_dataset):
                 ranh_h, rand_w = self.random_crop_start(h, w, self.opt.denoise_crop_size, 2)
                 crop_tensor = tensors[:, :, ranh_h:ranh_h+self.opt.denoise_crop_size, rand_w:rand_w+self.opt.denoise_crop_size]
                 ret_tensors.append(crop_tensor)
-            ret_tensors = torch.cat(ret_tensors, dim=0)
+            ret_tensors = torch.cat(ret_tensors, dim = 0)
         
         return tuple(ret_tensors)
 
     def augment_tensor_patch(self, d_images, gt_images):
         """
-        对deblur后的tensor做数据增强
+        apply the augmentation to the output of DeblurNet
         """
         if self.tag == "train":
-            if hasattr(self.opt, 'cutblur'):
-                return self.cutblur_tensor_patch(d_images, gt_images)
+            if hasattr(self.opt, 'cutnoise'):
+                return self.cutnoise_tensor_patch(d_images, gt_images)
             elif hasattr(self.opt, 'cutout'):
                 return DA.cutout_tensor(d_images, self.opt.cutout.size, self.opt.cutout.prob)
             else:
@@ -607,16 +600,14 @@ class TP_dataset(SLRGB2RGB_dataset):
         
         return d_images
 
-
-    def cutblur_tensor_patch(self, d_images, gt_images):
+    def cutnoise_tensor_patch(self, d_images, gt_images):
         """
-        对deblur后的tensor
+        apply the CutNoise to the output of DeblurNet
         """
         if self.tag == "train":
-            return DA.curblur_tensor(d_images, gt_images, self.opt.cutblur.size, self.opt.cutblur.prob)
+            return DA.cutnoise_tensor(d_images, gt_images, self.opt.cutnoise.size, self.opt.cutnoise.prob)
         else:
             return d_images
-
 
     def __getitem__(self, index):
         # Read images
@@ -644,8 +635,8 @@ class TP_dataset(SLRGB2RGB_dataset):
         in_long_img = in_long_img.astype(np.float) / 255.0
         out_srgb_img = out_srgb_img.astype(np.float) / 255.0
 
-        if hasattr(self.opt, 'color_distor') and self.opt.color_distor:
-            in_short_img = DA.color_distortion(in_short_img, self.opt.color_distor.prob)
+        if hasattr(self.opt, 'color_adjust') and self.opt.color_adjust:
+            in_short_img = DA.color_adjustment(in_short_img, self.opt.color_adjust.prob)
         
         if self.opt.random_crop:
             if hasattr(self.opt, 'deblur_patch_per_image'):
@@ -660,7 +651,7 @@ class TP_dataset(SLRGB2RGB_dataset):
 
             in_short_img, in_long_img, out_srgb_img, gt_long_img = self.crop_patch(in_short_img, in_long_img, out_srgb_img, patch_per_image, deblur_crop_size)
             
-            # 获取blur patch
+            # Get blur patch
             if hasattr(self.opt, 'blur_path'):
                 assert deblur_crop_size <= 1024
                 # NHWC
@@ -688,10 +679,10 @@ class TP_dataset(SLRGB2RGB_dataset):
         deblur_size = self.opt.deblur_size
         down_short_img, down_long_img, down_out_img, down_gtlong_img = resize_img([in_short_img, in_long_img, out_srgb_img, gt_long_img], size = deblur_size)
 
-        if hasattr(self.opt, 'cutblur') and self.tag == "train":
-            in_short_img = DA.cutblur(in_short_img, out_srgb_img, self.opt.cutblur.size, self.opt.cutblur.prob)
-            # if hasattr(self.opt.cutblur, 'long') and self.opt.cutblur.long:
-            #     in_long_img = DA.cutblur(in_long_img, out_srgb_img, self.opt.cutblur.size, self.opt.cutblur.prob)
+        if hasattr(self.opt, 'cutnoise') and self.tag == "train":
+            in_short_img = DA.cutnoise(in_short_img, out_srgb_img, self.opt.cutnoise.size, self.opt.cutnoise.prob)
+            # if hasattr(self.opt.cutnoise, 'long') and self.opt.cutnoise.long:
+            #     in_long_img = DA.cutnoise(in_long_img, out_srgb_img, self.opt.cutnoise.size, self.opt.cutnoise.prob)
 
         # to tensor
         if len(in_short_img.shape) == 3:
@@ -735,7 +726,7 @@ class TP_dataset_v1(TP_dataset):
     
     def downsample_tensors(self, tensors):
         """
-        对tensors下采样再进deblurnet
+        downsampling tensors as the inputs for the DeblurNet
         tensors: list or Tensor
         """
         if isinstance(self.opt.deblur_size, list):
@@ -748,10 +739,10 @@ class TP_dataset_v1(TP_dataset):
         if isinstance(tensors, list):
             ret_tensors = [[] for _ in range(len(tensors))]
             for i in range(len(tensors)):
-                ret_tensors[i] = F.upsample(tensors[i], size=(deblur_size, deblur_size), mode='area')
+                ret_tensors[i] = F.upsample(tensors[i], size = (deblur_size, deblur_size), mode = 'area')
             return tuple(ret_tensors)
         else:
-            ret_tensor = F.upsample(tensors, size=(deblur_size, deblur_size), mode='area')
+            ret_tensor = F.upsample(tensors, size = (deblur_size, deblur_size), mode = 'area')
             return ret_tensor
             
 
@@ -780,10 +771,10 @@ class TP_dataset_v1(TP_dataset):
         in_short_img = in_short_img.astype(np.float) / 255.0
         in_long_img = in_long_img.astype(np.float) / 255.0
         out_srgb_img = out_srgb_img.astype(np.float) / 255.0
-
-        if hasattr(self.opt, 'color_distor') and self.opt.color_distor:
-            in_short_img = DA.color_distortion(in_short_img, self.opt.color_distor.prob)
         
+        if hasattr(self.opt, 'color_adjust') and self.opt.color_adjust:
+            in_short_img = DA.color_adjustment(in_short_img, self.opt.color_adjust.prob)
+
         if self.opt.random_crop:
             if hasattr(self.opt, 'deblur_patch_per_image'):
                 patch_per_image = self.opt.deblur_patch_per_image
@@ -797,7 +788,7 @@ class TP_dataset_v1(TP_dataset):
 
             in_short_img, in_long_img, out_srgb_img, gt_long_img = self.crop_patch(in_short_img, in_long_img, out_srgb_img, patch_per_image, deblur_crop_size)
             
-            # 获取blur patch
+            # Get blur patch
             if hasattr(self.opt, 'blur_path'):
                 assert deblur_crop_size <= 1024
                 # NHWC
@@ -821,10 +812,10 @@ class TP_dataset_v1(TP_dataset):
                 in_short_img = np.clip(in_short_img, 0, 1)
                 in_long_img = np.clip(in_long_img, 0, 1)
 
-        if hasattr(self.opt, 'cutblur') and self.tag == "train":
-            in_short_img = DA.cutblur(in_short_img, out_srgb_img, self.opt.cutblur.size, self.opt.cutblur.prob)
-            # if hasattr(self.opt.cutblur, 'long') and self.opt.cutblur.long:
-            #     in_long_img = DA.cutblur(in_long_img, out_srgb_img, self.opt.cutblur.size, self.opt.cutblur.prob)
+        if hasattr(self.opt, 'cutnoise') and self.tag == "train":
+            in_short_img = DA.cutnoise(in_short_img, out_srgb_img, self.opt.cutnoise.size, self.opt.cutnoise.prob)
+            # if hasattr(self.opt.cutnoise, 'long') and self.opt.cutnoise.long:
+            #     in_long_img = DA.cutnoise(in_long_img, out_srgb_img, self.opt.cutnoise.size, self.opt.cutnoise.prob)
 
         # to tensor
         if len(in_short_img.shape) == 3:

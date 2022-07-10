@@ -8,13 +8,15 @@ from scipy.stats import tukeylambda
 
 from .noise import VIVO_NOISE, MI_NOTE10_NOISE
 
+
 def adjust_gamma(image, gamma = 2.2):
     """
     image should be in [0, 1]
     """
     return np.power(image, gamma)
 
-def cutblur(d_image, gt_image, cut_size, cut_prob):
+
+def cutnoise(d_image, gt_image, cut_size, cut_prob):
     """
     args:
         d_image: NHWC or HWC
@@ -41,9 +43,10 @@ def cutblur(d_image, gt_image, cut_size, cut_prob):
         raise ValueError('shape [%s] of d_image is not supported' % str(d_image.shape))
     return d_image
 
-def curblur_tensor(d_image, gt_image, cut_size, cut_prob):
+
+def cutnoise_tensor(d_image, gt_image, cut_size, cut_prob):
     """
-    cutblur function for pytorch tensor
+    cutnoise function for pytorch tensor
     args: 
         d_image: NCHW
         gt_image: NCHW
@@ -58,6 +61,7 @@ def curblur_tensor(d_image, gt_image, cut_size, cut_prob):
                 gt_image[i, :, rand_h:rand_h+cut_size, rand_w:rand_w+cut_size]
 
     return d_image
+
 
 def cutout_tensor(d_image, cut_size, cut_prob):
     """
@@ -75,9 +79,10 @@ def cutout_tensor(d_image, cut_size, cut_prob):
     
     return d_image
 
+
 def apply_darken(img_array, enhance_factor, gamma_factor):
     """
-    img_array: HWC, pixel should be in [0,1]
+    img_array: HWC, pixel should be in [0, 1]
     """
     img_array = (img_array * 255.).astype(np.uint8)
     pil_img = Image.fromarray(img_array) 
@@ -91,13 +96,14 @@ def apply_darken(img_array, enhance_factor, gamma_factor):
 
     return img_float
 
-def darken(images, dark_prob = 0.5):
+
+def illum_adjustment(images, dark_prob = 0.5):
     """
     images: numpy array, pixel should be in [0, 1]
     """
     p = random.random()
     if p < dark_prob:
-        enhance_factor = random.choice([0.6, 0.7, 0.8, 0.9])
+        enhance_factor = random.choice([0.6, 0.7, 0.8, 0.9])        # users can comment this line
         gamma_factor = 1 / random.choice([0.6, 0.7, 0.75, 0.8, 0.9])
         if len(images.shape) == 4:
             temp = []
@@ -113,6 +119,32 @@ def darken(images, dark_prob = 0.5):
         return images
     else:
         return images
+
+
+def color_adjustment(img, prob = 0.5):
+    """
+    img: HWC(RGB format) or HW, value in [0, 1]
+    """
+    p = random.uniform(0.0, 1.0)
+    if p < prob:
+        img = img.astype(np.float32)
+        if len(img.shape) == 2:
+            a = random.uniform(0.3, 0.6)
+            b = random.uniform(0.001, 0.01)
+            img = a * img + b
+        elif len(img.shape) == 3:
+            a = random.uniform(0.3, 0.6)
+            b = random.uniform(0.001, 0.01)
+            _, _, C = img.shape
+            for i in range(C):
+                img[:, :, i] = a * img[:, :, i] + b
+        else:
+            raise ValueError("img shape %s is not supported." % (img.shape))
+        
+        return np.clip(img, 0.0, 1.0)
+    else:
+        return img
+
 
 def add_shot_noise(x, iso, ratio = None, noise = 'mi_note10'):
     """
@@ -189,27 +221,3 @@ def add_shot_noise(x, iso, ratio = None, noise = 'mi_note10'):
     x = np.power(demosaicked_rgb, 1 / 2.2)
 
     return x
-
-def color_distortion(img, prob = 0.5):
-    """
-    img: HWC(RGB format) or HW, value in [0, 1]
-    """
-    p = random.uniform(0.0, 1.0)
-    if p < prob:
-        img = img.astype(np.float32)
-        if len(img.shape) == 2:
-            a = random.uniform(0.3, 0.6)
-            b = random.uniform(0.001, 0.01)
-            img = a * img + b
-        elif len(img.shape) == 3:
-            a = random.uniform(0.6, 0.9)
-            b = random.uniform(0.001, 0.01)
-            _, _, C = img.shape
-            for i in range(C):
-                img[:, :, i] = a * img[:, :, i] + b
-        else:
-            raise ValueError("img shape %s is not supported." % (img.shape))
-        
-        return np.clip(img, 0.0, 1.0)
-    else:
-        return img

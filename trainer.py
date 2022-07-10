@@ -91,13 +91,13 @@ class Trainer(TrainingModule):
                 else:
                     out = outs
                 
-                # ========= pack gt data ==========
+                # ============ pack gt data ============
                 gt_dict = pack_gt_data([RGBout_img, gt_long_img])
                 
-                # ========= pack output ==========
+                # ============ pack output =============
                 outputs = pack_network_output(outs, self.opt.GNet.name)
 
-                # ========= train G ============
+                # ============== train G ===============
                 if self.LM.train_GAN:
                     fake_scalar = self.D(short_img, long_img, out)
                 else:
@@ -113,7 +113,7 @@ class Trainer(TrainingModule):
                 G_loss.backward()
                 self.optim_G.step()
 
-                # ========== train D =============
+                # ============== train D ===============
                 if self.LM.train_GAN:
                     fake_scalar_d = self.D(short_img, long_img, out.detach())
                     true_scalar_d = self.D(short_img, long_img, RGBout_img)
@@ -254,7 +254,6 @@ class Trainer(TrainingModule):
         val_PSNR = val_PSNR / num_of_val_image
         val_SSIM = val_SSIM / num_of_val_image
 
-
         val_day_PSNR = val_day_PSNR / num_of_val_day
         val_day_SSIM = val_day_SSIM / num_of_val_day
         val_night_PSNR = val_night_PSNR / num_of_val_night
@@ -297,7 +296,6 @@ class TwoPhaseTrainer(TrainingModule):
         else:
             raise ValueError('phase should be deblur or denoise, but found %s.' % opt.phase)
 
-
         # to support multi gpu or distributed training
         self.G = self.wrapper(self.G)
 
@@ -320,14 +318,13 @@ class TwoPhaseTrainer(TrainingModule):
     def _init_optim(self):
         if self.optim_config.name == "Adam":
             self.optim_G = torch.optim.Adam(self.G.parameters(), lr = self.optim_config.args.lr_g, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
-            self.optim_D = torch.optim.Adam(self.D.parameters(), lr = self.optim_config.args.lr_d, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
+            # self.optim_D = torch.optim.Adam(self.D.parameters(), lr = self.optim_config.args.lr_d, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
         elif self.optim_config.name == "SGD":
             self.optim_G = torch.optim.SGD(self.G.parameters(), lr = self.optim_config.args.lr_g)
-            self.optim_D = torch.optim.SGD(self.D.parameters(), lr = self.optim_config.args.lr_d)
+            # self.optim_D = torch.optim.SGD(self.D.parameters(), lr = self.optim_config.args.lr_d)
         elif self.optim_config.name == "Adamw":
             self.optim_G = AdamW(self.G.parameters(), lr = self.optim_config.args.lr_g, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
-        
-
+    
     def train(self):
         # Count start time
         iters_done = 0
@@ -342,7 +339,7 @@ class TwoPhaseTrainer(TrainingModule):
             for i, data in enumerate(self.train_loader):
                 print(i, self.device)
 
-                # ========= Get data ==================
+                # ============= Get data ==============
                 short_img = data['short_img'].to(self.device)
                 long_img = data['long_img'].to(self.device)
                 RGBout_img = data['RGBout_img'].to(self.device)
@@ -358,12 +355,12 @@ class TwoPhaseTrainer(TrainingModule):
                 down_short_img, down_long_img, down_out_img, down_gtlong_img = \
                     self.train_loader.dataset.downsample_tensors([short_img, long_img, RGBout_img, gt_long_img])
                 
-                # =========== forward ==================
+                # ============== forward ===============
                 if self.Training_config.phase == 'deblur':
                     outs = self.G(down_short_img, down_long_img)
                 elif self.Training_config.phase == 'denoise':
                     deblur_out = self.deblurNet(down_short_img, down_long_img).detach()
-                    deblur_out = F.upsample(deblur_out, size=(short_img.shape[2], short_img.shape[3]), mode='bilinear', align_corners=False)
+                    deblur_out = F.upsample(deblur_out, size = (short_img.shape[2], short_img.shape[3]), mode = 'bilinear', align_corners = False)
 
                     short_img, long_img, RGBout_img, deblur_out = \
                         self.train_loader.dataset.crop_tensor_patch([short_img, long_img, RGBout_img, deblur_out])
@@ -372,19 +369,19 @@ class TwoPhaseTrainer(TrainingModule):
 
                     outs = self.G(short_img, long_img, deblur_out)
                 
-                # ========== pack gt data =================
+                # ============ pack gt data ============
                 if self.Training_config.phase == 'deblur':
                     gt_dict = pack_gt_data([down_out_img, down_gtlong_img])
                 elif self.Training_config.phase == 'denoise':
                     gt_dict = pack_gt_data([RGBout_img, gt_long_img])
                 
-                # ========= pack output ================
+                # ============ pack output =============
                 if self.Training_config.phase == 'deblur':
                     outputs = pack_network_output(outs, self.opt.DeblurNet.name)
                 elif self.Training_config.phase == 'denoise':
                     outputs = pack_network_output(outs, self.opt.DenoiseNet.name)
 
-                # =========== train G ================
+                # ============== train G ===============
                 G_loss, G_loss_info = self.LM(outputs, gt_dict, None)
 
                 self.optim_G.zero_grad()
@@ -422,14 +419,13 @@ class TwoPhaseTrainer(TrainingModule):
             
             self._validate(epoch)
 
-
     def _validate(self, epoch):
         self.G.eval()
         val_PSNR, val_SSIM, num_of_val_image = 0, 0, 0
 
         for j, data in enumerate(self.val_loader):
 
-            # ========= Get data ==================
+            # ============= Get data ===============
             short_img = data['short_img'].to(self.device)
             long_img = data['long_img'].to(self.device)
             RGBout_img = data['RGBout_img'].to(self.device)
@@ -445,7 +441,7 @@ class TwoPhaseTrainer(TrainingModule):
             down_short_img, down_long_img, down_out_img, down_gtlong_img = \
                 self.train_loader.dataset.downsample_tensors([short_img, long_img, RGBout_img, gt_long_img])
 
-            # =========== forward ==================
+            # ============== forward ===============
             with torch.no_grad():
                 if self.Training_config.phase == 'deblur':
                     print(down_short_img.shape, down_long_img.shape)

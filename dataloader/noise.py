@@ -14,7 +14,8 @@ VIVO_NOISE = {'long': {'100iso': [[0.10302168, 0.22796172],
                                    [3.18639667, 8.21943797],
                                    [3.01309412, 8.25159436]]}}
 
-# dingdong noise model, calibrated on 20200915
+
+# physic-based noise model, calibrated on 15/09/2020
 MI_NOTE10_NOISE = {
     # shot noise
     "K_g": [0.60948693, -5.27886693, 11.51749064],

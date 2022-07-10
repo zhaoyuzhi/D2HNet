@@ -192,7 +192,7 @@ def l2normalize(v, eps = 1e-12):
     return v / (v.norm() + eps)
 
 class SpectralNorm(nn.Module):
-    def __init__(self, module, name='weight', power_iterations=1):
+    def __init__(self, module, name = 'weight', power_iterations = 1):
         super(SpectralNorm, self).__init__()
         self.module = module
         self.name = name
@@ -374,19 +374,19 @@ class IWT(nn.Module):
 class AttnModule(nn.Module):
     """ Self attention Layer"""
 
-    def __init__(self, in_dim, efficient=False, pool=False):
+    def __init__(self, in_dim, efficient = False, pool = False):
         super(AttnModule, self).__init__()
         self.chanel_in = in_dim
         # if efficient is True, use adaptive pool
         self.efficient = efficient
         self.pool = pool
 
-        self.query_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim // 8, kernel_size=1)
-        self.key_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim // 8, kernel_size=1)
-        self.value_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim, kernel_size=1)
+        self.query_conv = nn.Conv2d(in_channels = in_dim, out_channels = in_dim // 8, kernel_size = 1)
+        self.key_conv = nn.Conv2d(in_channels = in_dim, out_channels = in_dim // 8, kernel_size = 1)
+        self.value_conv = nn.Conv2d(in_channels = in_dim, out_channels = in_dim, kernel_size = 1)
         self.gamma = nn.Parameter(torch.zeros(1))
 
-        self.softmax = nn.Softmax(dim=-1)  #
+        self.softmax = nn.Softmax(dim = -1)  #
 
     def forward(self, x, y):
         """
@@ -420,7 +420,7 @@ class AttnModule(nn.Module):
         out = self.gamma * out + x
 
         if self.efficient or self.pool:
-            out = F.interpolate(out, size=(W, H), mode='bilinear')
+            out = F.interpolate(out, size = (W, H), mode = 'bilinear')
 
         return out, attention
 
@@ -439,8 +439,8 @@ class GradLayer(nn.Module):
                     [0, 0, 0]]
         kernel_h = torch.FloatTensor(kernel_h).unsqueeze(0).unsqueeze(0)
         kernel_v = torch.FloatTensor(kernel_v).unsqueeze(0).unsqueeze(0)
-        self.weight_h = nn.Parameter(data=kernel_h, requires_grad=False)
-        self.weight_v = nn.Parameter(data=kernel_v, requires_grad=False)
+        self.weight_h = nn.Parameter(data = kernel_h, requires_grad = False)
+        self.weight_v = nn.Parameter(data = kernel_v, requires_grad = False)
 
     def get_gray(self,x):
         ''' 
@@ -448,15 +448,15 @@ class GradLayer(nn.Module):
         '''
         gray_coeffs = [65.738, 129.057, 25.064]
         convert = x.new_tensor(gray_coeffs).view(1, 3, 1, 1) / 256
-        x_gray = x.mul(convert).sum(dim=1)
+        x_gray = x.mul(convert).sum(dim = 1)
         return x_gray.unsqueeze(1)
 
     def forward(self, x):
         if x.shape[1] == 3:
             x = self.get_gray(x)
 
-        x_v = F.conv2d(x, self.weight_v, padding=1)
-        x_h = F.conv2d(x, self.weight_h, padding=1)
+        x_v = F.conv2d(x, self.weight_v, padding = 1)
+        x_h = F.conv2d(x, self.weight_h, padding = 1)
         x = torch.sqrt(torch.pow(x_v, 2) + torch.pow(x_h, 2) + 1e-6)
 
         return x
@@ -464,9 +464,9 @@ class GradLayer(nn.Module):
 class BlurLayer(nn.Module):
     """Implements the blur layer used in StyleGAN."""
 
-    def __init__(self, channels, kernel=(1, 2, 1), normalize=True, flip=False):
+    def __init__(self, channels, kernel = (1, 2, 1), normalize = True, flip = False):
         super().__init__()
-        kernel = np.array(kernel, dtype=np.float32).reshape(1, 3)
+        kernel = np.array(kernel, dtype = np.float32).reshape(1, 3)
         kernel = kernel.T.dot(kernel)
         if normalize:
             kernel /= np.sum(kernel)
@@ -479,4 +479,4 @@ class BlurLayer(nn.Module):
         self.channels = channels
 
     def forward(self, x):
-        return F.conv2d(x, self.kernel, stride=1, padding=1, groups=self.channels)
+        return F.conv2d(x, self.kernel, stride = 1, padding = 1, groups = self.channels)

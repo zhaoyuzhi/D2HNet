@@ -36,22 +36,21 @@ python setup.py build develop
 
 ### 3.1 D2-Dataset
 
-Users can find the full D2-Dataset through the [link](https://portland-my.sharepoint.com/:f:/g/personal/yzzhao2-c_my_cityu_edu_hk/EgAgxXmhdExEm53S5vlkfeABg5ACBcYxvcyr7gMDWzS0sw?e=EK1sKa). Just unzip each `zip` file in each path. Since the full dataset is quite large (554Gb), users may download seperated dataset, and the links are given below.
+Users can find the full D2-Dataset through the [link](https://portland-my.sharepoint.com/:f:/g/personal/yzzhao2-c_my_cityu_edu_hk/EgAgxXmhdExEm53S5vlkfeABg5ACBcYxvcyr7gMDWzS0sw?e=EK1sKa). Just unzip each `zip` file in the corresponding path. Since the full dataset is quite large (554Gb), users may download seperated dataset, and the links are given below.
 
-| Name | Description | Resolution | Numbers | Link and Size |
+| Name | Description | Resolution | Numbers | Link / Size |
 | ---- | ---- | :----: | :----: | :----: |
-| original/train | synthetic training tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EWJ09tx5QUdPrmvKM3Ne3m4B5J47MQVXHxutv_3_ARUh4A?e=ZKNWYG) 192 GB |
-| original/train_blur_patch | selected patch tuples by VarmapSelection from `train` | 1024x1024 | 9453 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYqegoikxoxJoxy-qKqTrU4BWwcBrwOcc0DLclfqSJzymw?e=qhHHeg) 99.0 GB |
-| original/val | synthetic validation tuples from videos 1-13 | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EQum2_I9mL5MltdFXciztkwBhxf1o2qPDL3iNmkL20KdyQ?e=SLrdfj) 9.44 GB |
-| original/val_no_overlap | synthetic validation tuples from videos 14-30 | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Edx1bBZ1znVNsDSbrLUub10BxGU72mfqO0tvNOIvS5XMRg?e=dxwm4X) 38.7 GB |
-| original/val_no_overlap_blur_patch | selected patch tuples by VarmapSelection from `val_no_overlap` | 1024x1024 | 99 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EbC3GB8PFitIvgo0SJbpj90BhFwimWmXqfcsmMl9j8gG0w?e=uwdMsZ) 1.11 GB |
-| original/val_no_overlap_noisy_1440p | noisy tuples by adding calibrated noises to `val_no_overlap` | 1024x1024 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/ETo2YmEvSDhKk0ETBec6ZF8BvseovbL-HbKiqZu3W391TA?e=oUejhu) 17.6 GB |
-| sharpened/train | MATLAB sharpened `train` tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Eeg_AdGiTAxGmmbaLBvwPcoBiExyxLylBqoUfppV18iFVw?e=nSeghK) 124 GB |
-| sharpened/train_blur_patch | MATLAB sharpened `train_blur_patch` tuples | 1024x1024 | 9453 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EfaX81jkGFtLq1B1_p3eR2MBu37f92ziZuQCwOJCw8B5sw?e=zp8h2Y) 59.0 GB |
-| sharpened/val | MATLAB sharpened `val` tuples | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EbAN8RMlvNhMmniGIVV-XmcBeMHojt3YaOFkn46Y3DRaXw?e=gQ0qa6) 6.08 GB |
-| sharpened/val_no_overlap | MATLAB sharpened `val_no_overlap` tuples | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EUdc3tybG2dGiGkX8I8rxnoBZq0uGuA8o5KB95bBFoeDNw?e=CNvKKS) 23.2 GB |
-| sharpened/val_no_overlap_blur_patch  | MATLAB sharpened `val_no_overlap_blur_patch` tuples | 1024x1024 | 99 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EV-dd99FPalEolcfoVasSCYBsPX0TeTuxMAiZBM0QIKvQA?e=QwEjB9) 659 MB |
-| Xiaomi_Mi_Note_10_photos | real captured long- and short-exposure photos | 4624x3472 | 28 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYshIGNbXwlBhAm_gx-uoVoBKqTxBBvXYkdvaCSpkWpCrw?e=GLDUhk) 2.45 GB |
+| original/train | synthetic training tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EWJ09tx5QUdPrmvKM3Ne3m4B5J47MQVXHxutv_3_ARUh4A?e=ZKNWYG) 192GB |
+| original/train_blur_patch | selected patch tuples by VarmapSelection from `train` | 1024x1024 | 9453 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYqegoikxoxJoxy-qKqTrU4BWwcBrwOcc0DLclfqSJzymw?e=qhHHeg) 99.0GB |
+| original/val | synthetic validation tuples from videos 1-13 | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EQum2_I9mL5MltdFXciztkwBhxf1o2qPDL3iNmkL20KdyQ?e=SLrdfj) 9.44GB |
+| original/val_no_overlap | synthetic validation tuples from videos 14-30 | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Edx1bBZ1znVNsDSbrLUub10BxGU72mfqO0tvNOIvS5XMRg?e=dxwm4X) 38.7GB |
+| original/val_no_overlap_blur_patch | selected patch tuples by VarmapSelection from `val_no_overlap` | 1024x1024 | 99 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EbC3GB8PFitIvgo0SJbpj90BhFwimWmXqfcsmMl9j8gG0w?e=uwdMsZ) 1.11GB |
+| sharpened/train | MATLAB sharpened `train` tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Eeg_AdGiTAxGmmbaLBvwPcoBiExyxLylBqoUfppV18iFVw?e=nSeghK) 124GB |
+| sharpened/train_blur_patch | MATLAB sharpened `train_blur_patch` tuples | 1024x1024 | 9453 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EfaX81jkGFtLq1B1_p3eR2MBu37f92ziZuQCwOJCw8B5sw?e=zp8h2Y) 59.0GB |
+| sharpened/val | MATLAB sharpened `val` tuples | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EbAN8RMlvNhMmniGIVV-XmcBeMHojt3YaOFkn46Y3DRaXw?e=gQ0qa6) 6.08GB |
+| sharpened/val_no_overlap | MATLAB sharpened `val_no_overlap` tuples | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EUdc3tybG2dGiGkX8I8rxnoBZq0uGuA8o5KB95bBFoeDNw?e=CNvKKS) 23.2GB |
+| sharpened/val_no_overlap_blur_patch  | MATLAB sharpened `val_no_overlap_blur_patch` tuples | 1024x1024 | 99 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EV-dd99FPalEolcfoVasSCYBsPX0TeTuxMAiZBM0QIKvQA?e=QwEjB9) 659MB |
+| Xiaomi_Mi_Note_10_photos | real captured long- and short-exposure photos | 4624x3472 | 28 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYshIGNbXwlBhAm_gx-uoVoBKqTxBBvXYkdvaCSpkWpCrw?e=GLDUhk) 2.45GB |
 
 Please unzip it in this path. Then, rename the full path to `data`.
 
@@ -80,9 +79,21 @@ Users need to change the parameters of `train.py` to train a specific network, a
 
 ### 4.2 Hyper-parameters of the network
 
-Users may change some parameters in `yaml` files to fit their machine and requirement:
+Users may change some parameters in the `yaml` files to fit their machine and requirement:
 
-- vgg_model_path: if users want to add the perceptual loss, please download VGG-16 officially pre-trained model: https://download.pytorch.org/models/vgg16-397923af.pth. Then, put it under `pretrained_models` folder. Otherwise, please comment out the `VGGLoss` in the `yaml` files.
+#### Training parameters:
+- epochs: overall training epochs
+- train_batch_size: training batch size, where one batch denotes that selecting one training image
+- num_workers: the number of workers for training dataloader
+- start_idx: if the users continue the training process, please enter the previous number of trained epochs. Also, remember to change `finetune_path`
+- finetune_path: the path to load pre-trained weights
+
+#### Loss and Optimizer parameters:
+- VGGLoss / vgg_model_path: if users want to add the perceptual loss, please download VGG-16 officially pre-trained model: https://download.pytorch.org/models/vgg16-397923af.pth. Then, put it under `pretrained_models` folder. Otherwise, please comment out the `VGGLoss` in the `yaml` files
+- lr_g: learning rate of the network
+- lr_decrease_epoch / lr_decrease_factor: after every `lr_decrease_epoch`, the learning rate multiplies with `lr_decrease_factor`
+
+#### Dataset parameters:
 - train_path: path to original synthetic training set (`original/train`)
 - val_path: path to original synthetic validation set (`original/val_no_overlap`)
 - train_sharp_path: path to sharpened training set (`sharpened/train`)
@@ -92,9 +103,9 @@ Users may change some parameters in `yaml` files to fit their machine and requir
 - deblur_size: the processing resolution of DeblurNet at training
 - denoise_crop_size: the processing resolution of EnhanceNet at training, cropped from DeblurNet results
 - denoise_patch_per_image: the numbers of cropped patches for EnhanceNet
-- cutblur: CutNoise-related hyper-parameters
-- darken: Illumination Adjustment (IA)-related hyper-parameters
-- color_distor: Color Adjustment (CA)-related hyper-parameters
+- cutnoise: CutNoise-related hyper-parameters
+- illum_adjust: Illumination Adjustment (IA)-related hyper-parameters
+- color_adjust: Color Adjustment (CA)-related hyper-parameters
 
 ### 4.3 D2HNet pre-trained models
 
@@ -106,7 +117,7 @@ Please unzip it in this path, you will get a folder named `snapshot`.
 
 ### 5.1 Validation
 
-Noisy long- and short-exposure validation pairs with different resolutions (e.g., 1440x2560 or 2880x5120) are pre-generated. We provide a sample `original/val_no_overlap_noisy_1440p` for running the script. Please change `--val_path` and `--val_sharp_path` to the paths to input (e.g., `original/val_no_overlap_noisy_1440p`) and ground truth (`sharpened/val_no_overlap`), respectively. Users can test the provided models using the following script:
+Noisy long- and short-exposure validation pairs with different resolutions (e.g., 1440x2560 or 2880x5120) are pre-generated. Users may generate `original/val_no_overlap_noisy_1440p` or `original/val_no_overlap_noisy_2880p` by adding noises to `original/val_no_overlap` for running the script. Please change `--val_path` and `--val_sharp_path` to the paths to input (e.g., `original/val_no_overlap_noisy_1440p`) and ground truth (`sharpened/val_no_overlap`), respectively. Users can test the provided models using the following script:
 
 ```bash
 python validation.py
@@ -119,6 +130,8 @@ Noisy long- and short-exposure real-world pairs are provided. Please change `--s
 ```bash
 python realworld.py
 ```
+
+Result images will be automatically saved in the `results_real_photo`.
 
 ## 6 Citation
 
@@ -139,3 +152,7 @@ If you find this work useful for your research, please cite:
   year={2022}
 }
 ```
+
+## 7 Acknowledgement
+
+This work has gone through ICCV, AAAI, and ECCV. We appreciate the works and suggestions from all reviewers and ACs. Part of the code is based on [MMEditing](https://github.com/open-mmlab/mmediting) and [LSFNet](https://github.com/JimmyChame/LSFNet).

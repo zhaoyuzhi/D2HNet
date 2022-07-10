@@ -55,7 +55,7 @@ class BaseModel(nn.Module):
     def dump_config_to_json(self, file):
         pass
 
-    def load_ckpt(self, model_path, force_load=False):
+    def load_ckpt(self, model_path, force_load = False):
         state_dict = torch.load(model_path, map_location = torch.device('cpu'))
 
         if force_load:
@@ -111,13 +111,12 @@ class DeblurNet_v2(BaseModel):
         self.build_layers()
 
 
-    def build_upsample_layer(self, in_channel, out_channel, upsample_level=None):
+    def build_upsample_layer(self, in_channel, out_channel, upsample_level = None):
         if self.opt.upsample_layer == 'pixelshuffle':
-            return PixelShuffleAlign(upscale_factor=2, mode=self.opt.shuffle_mode)
+            return PixelShuffleAlign(upscale_factor = 2, mode = self.opt.shuffle_mode)
         elif self.opt.upsample_layer == 'bilinear':
-            return nn.Sequential(nn.Upsample(scale_factor=2, mode='bilinear', align_corners=False),
-                                 nn.Conv2d(in_channels=in_channel, out_channels=out_channel, kernel_size=3,
-                                           stride=1, padding=1))
+            return nn.Sequential(nn.Upsample(scale_factor = 2, mode = 'bilinear', align_corners = False),
+                                 nn.Conv2d(in_channels = in_channel, out_channels = out_channel, kernel_size = 3, stride = 1, padding = 1))
 
     def build_layers(self):
         
@@ -125,36 +124,36 @@ class DeblurNet_v2(BaseModel):
         self.idwt = IWT()
         
         self.fusion_conv = Conv2dLayer(self.in_channel * 2 * 4 * 4,
-                                       self.ngf * 4 * 4, 3, stride=1, padding=1, pad_type=self.pad_type,
-                                       activation=self.activ, norm=self.norm)
+                                       self.ngf * 4 * 4, 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                                       activation = self.activ, norm = self.norm)
 
         self.downsample_conv = Conv2dLayer(self.in_channel * 2 * 4,
-                                         self.in_channel * 2 * 4, 3, stride=1, padding=1, pad_type=self.pad_type,
-                                         activation=self.activ, norm=self.norm)
+                                         self.in_channel * 2 * 4, 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                                         activation = self.activ, norm = self.norm)
         
         # deblur resblocks
         for i in range(self.deblur_res_num):
             in_channels = self.ngf * 4 * 4
-            block = ResBlock(dim=in_channels,
-                             kernel_size=3, stride=1, padding=1, pad_type=self.pad_type,
-                             activation=self.activ, norm=self.norm)
+            block = ResBlock(dim = in_channels,
+                             kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                             activation = self.activ, norm = self.norm)
             setattr(self, 'deblur_res_block_%d' % i, block)
         
         # upsample layer after deblur resblocks
         self.upsample_conv = Conv2dLayer(self.ngf * 4,
-                                         self.ngf * 4, 3, stride=1, padding=1, pad_type=self.pad_type,
-                                         activation=self.activ, norm=self.norm)
+                                         self.ngf * 4, 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                                         activation = self.activ, norm = self.norm)
 
         self.deblur_layer = Conv2dLayer(self.ngf, 3, 3,
-                                        stride=1, padding=1, pad_type=self.pad_type,
-                                        activation='none', norm='none')
+                                        stride = 1, padding = 1, pad_type = self.pad_type,
+                                        activation = 'none', norm = 'none')
 
         # deblur resblock2
         for i in range(self.deblur_res_num2):
             in_channels = self.ngf
-            block = ResBlock(dim=in_channels,
-                             kernel_size=3, stride=1, padding=1, pad_type=self.pad_type,
-                             activation=self.activ, norm=self.norm)
+            block = ResBlock(dim = in_channels,
+                             kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                             activation = self.activ, norm = self.norm)
             setattr(self, 'deblur_res_block2_%d' % i, block)
         
         if self.opt.final_activ == 'tanh':
@@ -226,134 +225,134 @@ class DenoiseNet_v2(BaseModel):
     def build_layers(self):
 
         self.downsample_short_conv1 = nn.Sequential(
-            Conv2dLayer(self.in_channel * 2, self.ngf, 3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.in_channel * 2, self.ngf, 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_short_conv2 = nn.Sequential(
-            Conv2dLayer(self.ngf, self.ngf * 2, 3, stride=2, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 2, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.ngf, self.ngf * 2, 3, stride = 2, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 2, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_short_conv3 = nn.Sequential(
-            Conv2dLayer(self.ngf * 2, self.ngf * 4, 3, stride=2, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 4, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.ngf * 2, self.ngf * 4, 3, stride = 2, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 4, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_short_conv4 = nn.Sequential(
-            Conv2dLayer(self.ngf * 4, self.ngf * 8, 3, stride=2, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 8, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.ngf * 4, self.ngf * 8, 3, stride = 2, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 8, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_short_conv5 = nn.Sequential(
-            Conv2dLayer(self.ngf * 8, self.ngf * 16, 3, stride=2, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 16, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.ngf * 8, self.ngf * 16, 3, stride = 2, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 16, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_long_conv1 = nn.Sequential(
-            Conv2dLayer(self.in_channel, self.ngf, 3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.in_channel, self.ngf, 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_long_conv2 = nn.Sequential(
-            Conv2dLayer(self.ngf, self.ngf * 2, 3, stride=2, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 2, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.ngf, self.ngf * 2, 3, stride = 2, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 2, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_long_conv3 = nn.Sequential(
-            Conv2dLayer(self.ngf * 2, self.ngf * 4, 3, stride=2, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 4, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.ngf * 2, self.ngf * 4, 3, stride = 2, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 4, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_long_conv4 = nn.Sequential(
-            Conv2dLayer(self.ngf * 4, self.ngf * 8, 3, stride=2, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 8, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.ngf * 4, self.ngf * 8, 3, stride = 2, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 8, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         self.downsample_long_conv5 = nn.Sequential(
-            Conv2dLayer(self.ngf * 8, self.ngf * 16, 3, stride=2, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 16, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            Conv2dLayer(self.ngf * 8, self.ngf * 16, 3, stride = 2, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 16, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         # decoder level 5
         self.upsample_alignblock5 = dcn_module.Align_module(self.ngf * 16, self.groups)
-        self.upsample_comb5 = Conv2dLayer(self.ngf * 32, self.ngf * 16, 3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+        self.upsample_comb5 = Conv2dLayer(self.ngf * 32, self.ngf * 16, 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         self.upsample_resblock5 = nn.Sequential(
-            ResBlock(dim=self.ngf * 16, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 16, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 16, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 16, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            ResBlock(dim = self.ngf * 16, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 16, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 16, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 16, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
         
         # decoder level 4
         self.upsample_conv4 = TransposeConv2dLayer(self.ngf * 16,
-                                         self.ngf * 8, 3, stride=1, padding=1, pad_type=self.pad_type,
-                                         activation=self.activ, norm=self.norm)
+                                         self.ngf * 8, 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                                         activation = self.activ, norm = self.norm)
         self.upsample_alignblock4 = dcn_module.Align_module(self.ngf * 8, self.groups)
-        self.upsample_comb4 = Conv2dLayer(self.ngf * 16, self.ngf * 8, 3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+        self.upsample_comb4 = Conv2dLayer(self.ngf * 16, self.ngf * 8, 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         self.upsample_resblock4 = nn.Sequential(
-            ResBlock(dim=self.ngf * 8, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 8, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 8, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 8, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            ResBlock(dim = self.ngf * 8, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 8, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 8, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 8, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
 
         # decoder level 3
         self.upsample_conv3 = TransposeConv2dLayer(self.ngf * 8 + self.ngf * 8,
-                                         self.ngf * 4, 3, stride=1, padding=1, pad_type=self.pad_type,
-                                         activation=self.activ, norm=self.norm)
+                                         self.ngf * 4, 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                                         activation = self.activ, norm = self.norm)
         self.upsample_alignblock3 = dcn_module.Align_module(self.ngf * 4, self.groups)
-        self.upsample_comb3 = Conv2dLayer(self.ngf * 8, self.ngf * 4, 3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+        self.upsample_comb3 = Conv2dLayer(self.ngf * 8, self.ngf * 4, 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         self.upsample_resblock3 = nn.Sequential(
-            ResBlock(dim=self.ngf * 4, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 4, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 4, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 4, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            ResBlock(dim = self.ngf * 4, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 4, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 4, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 4, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
 
         # decoder level 2
         self.upsample_conv2 = TransposeConv2dLayer(self.ngf * 4 + self.ngf * 4,
-                                         self.ngf * 2, 3, stride=1, padding=1, pad_type=self.pad_type,
-                                         activation=self.activ, norm=self.norm)
+                                         self.ngf * 2, 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                                         activation = self.activ, norm = self.norm)
         self.upsample_alignblock2 = dcn_module.Align_module(self.ngf * 2, self.groups)
-        self.upsample_comb2 = Conv2dLayer(self.ngf * 4, self.ngf * 2, 3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+        self.upsample_comb2 = Conv2dLayer(self.ngf * 4, self.ngf * 2, 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         self.upsample_resblock2 = nn.Sequential(
-            ResBlock(dim=self.ngf * 2, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 2, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 2, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm),
-            ResBlock(dim=self.ngf * 2, kernel_size=3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+            ResBlock(dim = self.ngf * 2, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 2, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 2, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm),
+            ResBlock(dim = self.ngf * 2, kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         )
 
         # decoder level 1
         self.upsample_conv1 = TransposeConv2dLayer(self.ngf * 2 + self.ngf * 2,
-                                         self.ngf, 3, stride=1, padding=1, pad_type=self.pad_type,
-                                         activation=self.activ, norm=self.norm)
+                                         self.ngf, 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                                         activation = self.activ, norm = self.norm)
         self.upsample_alignblock1 = dcn_module.Align_module(self.ngf, self.groups)
-        self.upsample_comb1 = Conv2dLayer(self.ngf * 2, self.ngf, 3, stride=1, padding=1, pad_type=self.pad_type, activation=self.activ, norm=self.norm)
+        self.upsample_comb1 = Conv2dLayer(self.ngf * 2, self.ngf, 3, stride = 1, padding = 1, pad_type = self.pad_type, activation = self.activ, norm = self.norm)
         self.upsample_conv0 = Conv2dLayer(self.ngf + self.ngf,
-                                         self.ngf, 3, stride=1, padding=1, pad_type=self.pad_type,
-                                         activation=self.activ, norm=self.norm)
+                                         self.ngf, 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                                         activation = self.activ, norm = self.norm)
         
         self.short_conv = Conv2dLayer(self.in_channel, self.ngf, 3,
-                                      stride=1, padding=1, pad_type=self.pad_type,
-                                      activation=self.activ, norm=self.norm)
+                                      stride = 1, padding = 1, pad_type = self.pad_type,
+                                      activation = self.activ, norm = self.norm)
         self.long_conv = Conv2dLayer(self.in_channel, self.ngf, 3,
-                                      stride=1, padding=1, pad_type=self.pad_type,
-                                      activation=self.activ, norm=self.norm)
+                                      stride = 1, padding = 1, pad_type = self.pad_type,
+                                      activation = self.activ, norm = self.norm)
         self.deblur_out_conv = Conv2dLayer(self.in_channel, self.ngf, 3,
-                                      stride=1, padding=1, pad_type=self.pad_type,
-                                      activation=self.activ, norm=self.norm)
+                                      stride = 1, padding = 1, pad_type = self.pad_type,
+                                      activation = self.activ, norm = self.norm)
 
         self.denoise_layer = Conv2dLayer(self.ngf, 3, 3,
-                                        stride=1, padding=1, pad_type=self.pad_type,
-                                        activation='none', norm='none')
+                                        stride = 1, padding = 1, pad_type = self.pad_type,
+                                        activation = 'none', norm = 'none')
         
         # denoise resblock2
         for i in range(self.denoise_res_num2):
             in_channels = self.ngf
-            block = ResBlock(dim=in_channels,
-                             kernel_size=3, stride=1, padding=1, pad_type=self.pad_type,
-                             activation=self.activ, norm=self.norm)
+            block = ResBlock(dim = in_channels,
+                             kernel_size = 3, stride = 1, padding = 1, pad_type = self.pad_type,
+                             activation = self.activ, norm = self.norm)
             setattr(self, 'denoise_res_block2_%d' % i, block)
         
         if self.opt.final_activ == 'tanh':

@@ -22,7 +22,7 @@ def OnePhase_Test(args):
     with open(args.opt, mode = 'r') as f:
         opt = edict(yaml.load(f))
 
-    generator = create_generator_val(opt.GNet, args.model_path, force_load=True)
+    generator = create_generator_val(opt.GNet, args.model_path, force_load = True)
 
     if args.num_gpus >= 1:
         device = torch.device('cuda')
@@ -36,7 +36,7 @@ def OnePhase_Test(args):
     print('The overall number of validation images:', len(val_dataset))
 
     # Define the dataloader
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=2)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size = 1, shuffle = False, num_workers = 2)
 
     # forward
     for i, data in enumerate(val_loader):
@@ -105,13 +105,13 @@ def TwoPhase_Test(args):
     if not os.path.exists(args.save_path):
         os.makedirs(args.save_path)
 
-    with open(args.opt, mode='r') as f:
+    with open(args.opt, mode = 'r') as f:
         opt = edict(yaml.load(f))
 
     if opt.Training_config.phase == 'deblur':
-        deblurNet = create_generator_val(opt.DeblurNet, args.model_path, force_load=False)
+        deblurNet = create_generator_val(opt.DeblurNet, args.model_path, force_load = False)
     elif opt.Training_config.phase == 'denoise':
-        denoiseNet = create_generator_val(opt.DenoiseNet, args.model_path, force_load=False)
+        denoiseNet = create_generator_val(opt.DenoiseNet, args.model_path, force_load = False)
         deblurNet = create_generator_val(opt.DeblurNet, opt.DeblurNet.finetune_path)
         for param in deblurNet.parameters():
             param.requires_grad = False
@@ -132,7 +132,7 @@ def TwoPhase_Test(args):
     print('The overall number of validation images:', len(val_dataset))
 
     # Define the dataloader
-    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=2)
+    val_loader = torch.utils.data.DataLoader(val_dataset, batch_size = 1, shuffle = False, num_workers = 2)
 
     # forward
     for i, data in enumerate(val_loader):
@@ -150,7 +150,7 @@ def TwoPhase_Test(args):
         with torch.no_grad():
 
             deblur_out = deblurNet(down_short_img, down_long_img)
-            deblur_out = F.interpolate(deblur_out, size=(short_img.shape[2], short_img.shape[3]), mode='bilinear', align_corners=False)
+            deblur_out = F.interpolate(deblur_out, size = (short_img.shape[2], short_img.shape[3]), mode = 'bilinear', align_corners = False)
             
             img_list = []
             name_list = []
@@ -228,14 +228,14 @@ if __name__ == "__main__":
         default = './options/tp_denoisenet_v2_002.yaml', \
             help = 'Path to option YAML file.')
     parser.add_argument('--model_path', type = str, \
-        default = './snapshot/tp_denoisenet_v2_002/GNet/GNet-official.pkl', \
+        default = './snapshot/tp_denoisenet_v2_002/GNet/GNet-epoch-149.pkl', \
             help = 'Model path to load.')
     parser.add_argument('--src_path', type = str, \
-        #default = './data/Xiaomi_Mi_Note_10_photos', \
         default = './data/Xiaomi_Mi_Note_10_photos', \
+        #default = '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/mobile_phone/Xiaomi_Mi_Note_10_photos', \
             help = 'Image path to read.')
     parser.add_argument('--save_path', type = str, \
-        default = './results_real_photo', \
+        default = './results_real_photo/tp_denoisenet_v2_002', \
             help = 'Path to save images.')
     parser.add_argument('--num_gpus', type = int, default = 1, help = 'GPU number, 0 means cpu is used.')
     parser.add_argument('--enable_patch', type = bool, default = True, help = 'enable patch process.')

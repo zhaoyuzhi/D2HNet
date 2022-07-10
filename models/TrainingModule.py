@@ -104,7 +104,7 @@ class LossManager(L.LossBase):
                 continue
 
             if 'GAN' in k:
-                loss_info[k] = v(fake_out, None, flag='G')
+                loss_info[k] = v(fake_out, None, flag = 'G')
             elif k == 'DeblurLoss':
                 loss_info[k] = v(output['deblur_out'], gt_img)
             elif k == 'DenoiseLoss':
@@ -164,7 +164,7 @@ class LossManager(L.LossBase):
         loss_info = {}
         for k, v in self.criterions.items():
             if 'GAN' in k:
-                loss_info[k] = v(fake_out, true_out, flag='D')
+                loss_info[k] = v(fake_out, true_out, flag = 'D')
 
         loss_sum = 0.
         for k, v in loss_info.items():
@@ -176,7 +176,7 @@ class LossManager(L.LossBase):
 
 class TrainingModule(P.Parallel, V.VisualBoard):
 
-    def __init__(self, opt, num_gpus:int, rank:int=None, world_size:int=None):
+    def __init__(self, opt, num_gpus:int, rank:int = None, world_size:int = None):
         """
         Base module of Trainer
         :param opt:
@@ -184,8 +184,8 @@ class TrainingModule(P.Parallel, V.VisualBoard):
         :param rank:
         :param world_size:
         """
-        P.Parallel.__init__(self, num_gpus=num_gpus, rank=rank, world_size=world_size)
-        V.VisualBoard.__init__(self, log_path=opt.log_path)
+        P.Parallel.__init__(self, num_gpus = num_gpus, rank = rank, world_size = world_size)
+        V.VisualBoard.__init__(self, log_path = opt.log_path)
 
         self.opt = opt
 

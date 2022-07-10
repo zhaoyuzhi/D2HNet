@@ -11,26 +11,26 @@ def create_generator(GNet_opt):
     generator = getattr(network, GNet_opt.name)(GNet_opt.args)
 
     # Init or Load value for the network
-    network.weights_init(generator, init_type=GNet_opt.init_type, init_gain=GNet_opt.init_gain)
+    network.weights_init(generator, init_type = GNet_opt.init_type, init_gain = GNet_opt.init_gain)
     print('Generator is created!')
     if GNet_opt.finetune_path != "":
         # pretrained_net = torch.load(GNet_opt.finetune_path)
         # generator = load_dict(generator, pretrained_net)
-        generator.load_ckpt(GNet_opt.finetune_path, force_load=hasattr(GNet_opt, 'force_load') and GNet_opt.force_load)
+        generator.load_ckpt(GNet_opt.finetune_path, force_load = hasattr(GNet_opt, 'force_load') and GNet_opt.force_load)
         print('Generator is loaded!')
     return generator
 
-def create_generator_val(GNet_opt, model_path=None, force_load=False):
+def create_generator_val(GNet_opt, model_path = None, force_load = False):
     # Initialize the network
     # generator = network.Mainstream(GNet_opt.args)
     generator = getattr(network, GNet_opt.name)(GNet_opt.args)
     # Init or Load value for the network
     
-    network.weights_init(generator, init_type=GNet_opt.init_type, init_gain=GNet_opt.init_gain)
+    network.weights_init(generator, init_type = GNet_opt.init_type, init_gain = GNet_opt.init_gain)
     print('Generator is created!')
 
     if model_path is not None:
-        generator.load_ckpt(model_path, force_load=force_load)
+        generator.load_ckpt(model_path, force_load = force_load)
         print('Generator is loaded!')
     return generator
 
@@ -39,7 +39,7 @@ def create_discriminator(DNet_opt):
     # discriminator = network.PatchDiscriminator70(DNet_opt.args)
     discriminator = getattr(network, DNet_opt.name)(DNet_opt.args)
     # Init the network
-    network.weights_init(discriminator, init_type=DNet_opt.init_type, init_gain=DNet_opt.init_gain)
+    network.weights_init(discriminator, init_type = DNet_opt.init_type, init_gain = DNet_opt.init_gain)
     print('Discriminators is created!')
     return discriminator
 

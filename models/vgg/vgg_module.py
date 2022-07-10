@@ -56,7 +56,7 @@ def create_perceptualnet(vgg16_model_path):
     return perceptualnet
 
 
-class VGG(nn.Module, metaclass=Singleton):
+class VGG(nn.Module, metaclass = Singleton):
 
     """
     A VGG warper, containing cache(FIFO) to store vgg feature.
@@ -90,8 +90,6 @@ class VGG(nn.Module, metaclass=Singleton):
         if id_ in self.cache:
             return self.cache[id_]
         else:
-            # if len(self.cache) > self.capacity:
-            #     self.cache.popitem(last=False)
             x = normalize_ImageNet_stats(x)
             conv2_2 = self.conv2_2(x)
             conv3_2 = self.conv3_2(conv2_2)
