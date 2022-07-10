@@ -6,15 +6,13 @@ import colour_demosaicing
 import math
 from scipy.stats import tukeylambda
 
-from .noise import VIVO_NOISE, MI_NOTE10_NOISE, MI_NOTE10_NOISE_20220330
-
+from .noise import VIVO_NOISE, MI_NOTE10_NOISE
 
 def adjust_gamma(image, gamma = 2.2):
     """
     image should be in [0, 1]
     """
     return np.power(image, gamma)
-
 
 def cutblur(d_image, gt_image, cut_size, cut_prob):
     """
@@ -43,7 +41,6 @@ def cutblur(d_image, gt_image, cut_size, cut_prob):
         raise ValueError('shape [%s] of d_image is not supported' % str(d_image.shape))
     return d_image
 
-
 def curblur_tensor(d_image, gt_image, cut_size, cut_prob):
     """
     cutblur function for pytorch tensor
@@ -62,7 +59,6 @@ def curblur_tensor(d_image, gt_image, cut_size, cut_prob):
 
     return d_image
 
-
 def cutout_tensor(d_image, cut_size, cut_prob):
     """
     cutout function for pytorch tensor
@@ -79,7 +75,6 @@ def cutout_tensor(d_image, cut_size, cut_prob):
     
     return d_image
 
-
 def apply_darken(img_array, enhance_factor, gamma_factor):
     """
     img_array: HWC, pixel should be in [0,1]
@@ -95,7 +90,6 @@ def apply_darken(img_array, enhance_factor, gamma_factor):
     # img_array = (img_float * 255.0).astype(np.uint8)
 
     return img_float
-
 
 def darken(images, dark_prob = 0.5):
     """
@@ -120,91 +114,6 @@ def darken(images, dark_prob = 0.5):
     else:
         return images
 
-'''
-def add_shot_noise(img, iso, ratio=None, noise='mi_note10'):
-    """
-    img: should be in [0, 1], rgb format, HWC
-    iso: list containing two number, e.g. [2000, 6000]
-    ratio: float, short_iso / long_iso, e.g. 3. 
-    """
-
-    img = adjust_gamma(img, 2.2)
-    raw = np.zeros(img.shape[:2], dtype=np.float32)
-    raw[::2, ::2] = img[::2, ::2, 0]          # R
-    raw[1::2, ::2] = img[1::2, ::2, 1]        # G
-    raw[::2, 1::2] = img[::2, 1::2, 1]        # G
-    raw[1::2, 1::2] = img[1::2, 1::2, 2]      # B
-
-    # Inverse AWB
-    awb_r = random.uniform(1.5, 2.4)
-    awb_b = random.uniform(1.5, 2.4)
-    raw[::2, ::2] /= awb_r  # awb_r
-    raw[1::2, 1::2] /= awb_b   # awb_b
-
-    # Assume now already subtracted black level
-    raw = np.clip((raw * 1023), 0, 1023)
-
-    # Adding noise
-    r = raw[::2, ::2]
-    g = raw[1::2, ::2]  # two g is identical till this step
-    b = raw[1::2, 1::2]
-
-    if noise == 'vivo':
-        return img
-    
-    elif noise == 'mi_note10':
-        # if mode == 'short':
-        #     iso = random.randint(2500, 12000)
-        # elif mode == 'long':
-        #     iso = random.randint(100, 2500)
-        iso = random.randint(iso[0], iso[1])
-
-        noise_factor_r = MI_NOTE10_NOISE[0]
-        noise_factor_b = MI_NOTE10_NOISE[1]
-        noise_factor_g = MI_NOTE10_NOISE[2]
-        
-        gamma_r = (iso / 100) * noise_factor_r[0]
-        beta_r = (iso / 100) ** 2 * noise_factor_r[1] + noise_factor_r[2]
-
-        gamma_b = (iso / 100) * noise_factor_b[0]
-        beta_b = (iso / 100) ** 2 * noise_factor_b[1] + noise_factor_b[2]
-
-        gamma_g = (iso / 100) * noise_factor_g[0]
-        beta_g = (iso / 100) ** 2 * noise_factor_g[1] + noise_factor_g[2]
-
-        noise_r = np.random.normal(0, scale=np.sqrt(gamma_r * r + beta_r))
-        noise_g1 = np.random.normal(0, scale=np.sqrt(gamma_g * g + beta_g))
-        noise_g2 = np.random.normal(0, scale=np.sqrt(gamma_g * g + beta_g))
-        noise_b = np.random.normal(0, scale=np.sqrt(gamma_b * b + beta_b))
-
-    raw[::2, ::2] += noise_r                    # R
-    raw[1::2, ::2] += noise_g1                  # G
-    raw[::2, 1::2] += noise_g2                  # G
-    raw[1::2, 1::2] += noise_b                  # B
-
-    raw = np.clip(raw, 0, 1023)
-
-    raw = raw.astype(np.uint16)
-    raw = raw.astype(np.float32)
-    # AWB
-    raw[::2, ::2] *= awb_r  # awb_r
-    raw[1::2, 1::2] *= awb_b   # awb_b
-
-    raw = np.clip(raw, 0, 1023).astype(np.uint16)
-
-    demosaicked_rgb = colour_demosaicing.demosaicing_CFA_Bayer_Menon2007(raw, 'RGGB')
-
-    demosaicked_rgb = np.clip(demosaicked_rgb, 0, 1023)
-    demosaicked_rgb = demosaicked_rgb.astype(np.uint16).astype(np.float32)
-
-    demosaicked_rgb = np.clip(demosaicked_rgb / 1023, 0, 1)
-
-    img = adjust_gamma(demosaicked_rgb, 1 / 2.2)
-    
-    return img
-'''
-
-# dingdong 0915 noise model
 def add_shot_noise(x, iso, ratio = None, noise = 'mi_note10'):
     """
     img x: should be in [0, 1], rgb format, HWC
@@ -280,7 +189,6 @@ def add_shot_noise(x, iso, ratio = None, noise = 'mi_note10'):
     x = np.power(demosaicked_rgb, 1 / 2.2)
 
     return x
-
 
 def color_distortion(img, prob = 0.5):
     """

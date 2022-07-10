@@ -6,13 +6,13 @@ import torch.distributed as dist
 
 class Parallel(object):
     def __init__(self, num_gpus, rank=None, world_size=None):
-        # 设置设备
+        # set device
         if num_gpus <= 0:
             device = torch.device("cpu")
         else:
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
             # device = torch.device("cpu")
-            # cudnn打开
+            # cudnn open
             torch.backends.cudnn.enabled = False
 
         self.device = device

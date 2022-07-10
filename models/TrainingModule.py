@@ -1,5 +1,4 @@
 import os
-import os.path as osp
 import numpy as np
 import json
 from datetime import datetime
@@ -47,7 +46,7 @@ def pack_gt_data(data: list):
 class LossManager(L.LossBase):
 
     def __init__(self, loss_conf, num_gpus):
-        super(LossManager, self).__init__(num_gpus=num_gpus)
+        super(LossManager, self).__init__(num_gpus = num_gpus)
         self.loss_conf = loss_conf
         self.criterions = {}
         self.train_GAN = False
@@ -194,14 +193,14 @@ class TrainingModule(P.Parallel, V.VisualBoard):
         cudnn.benchmark = opt.cudnn_benchmark
 
         self.save_folder = opt.save_path
-        if not osp.exists(self.save_folder):
+        if not os.path.exists(self.save_folder):
             os.makedirs(self.save_folder)
-        if not osp.exists(osp.join(self.save_folder, "GNet")):
-            os.makedirs(osp.join(self.save_folder, 'GNet'))
-        if not osp.exists(osp.join(self.save_folder, 'DNet')):
-            os.makedirs(osp.join(self.save_folder, 'DNet'))
-        if not osp.exists(osp.join(self.save_folder, 'sample')):
-            os.makedirs(osp.join(self.save_folder, 'sample'))
+        if not os.path.exists(os.path.join(self.save_folder, "GNet")):
+            os.makedirs(os.path.join(self.save_folder, 'GNet'))
+        if not os.path.exists(os.path.join(self.save_folder, 'DNet')):
+            os.makedirs(os.path.join(self.save_folder, 'DNet'))
+        if not os.path.exists(os.path.join(self.save_folder, 'sample')):
+            os.makedirs(os.path.join(self.save_folder, 'sample'))
 
         print("There are %d GPUs used" % self.num_gpus)
         if num_gpus > 0:
@@ -228,17 +227,17 @@ class TrainingModule(P.Parallel, V.VisualBoard):
 
     def _save_G(self, opt, epoch, iter, len_dataset, net):
         if opt.save_mode == 'epoch':
-            save_path = osp.join(self.save_folder, 'GNet', 'GNet-epoch-%d.pkl' % epoch)
+            save_path = os.path.join(self.save_folder, 'GNet', 'GNet-epoch-%d.pkl' % epoch)
         elif opt.save_mode == 'iter':
-            save_path = osp.join(self.save_folder, 'GNet', 'GNet-iter-%d.pkl' % iter)
+            save_path = os.path.join(self.save_folder, 'GNet', 'GNet-iter-%d.pkl' % iter)
 
         self._save_model(opt, epoch, iter, len_dataset, net, save_path)
 
     def _save_D(self, opt, epoch, iter, len_dataset, net):
         if opt.save_mode == 'epoch':
-            save_path = osp.join(self.save_folder, 'DNet', 'DNet-epoch-%d.pkl' % epoch)
+            save_path = os.path.join(self.save_folder, 'DNet', 'DNet-epoch-%d.pkl' % epoch)
         elif opt.save_mode == 'iter':
-            save_path = osp.join(self.save_folder, 'DNet', 'DNet-iter-%d.pkl' % iter)
+            save_path = os.path.join(self.save_folder, 'DNet', 'DNet-iter-%d.pkl' % iter)
 
         self._save_model(opt, epoch, iter, len_dataset, net, save_path)
 

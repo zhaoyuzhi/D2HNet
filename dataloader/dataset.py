@@ -8,14 +8,11 @@ import torch.nn.functional as F
 from copy import deepcopy
 import sys
 
-
 from util import utils
 from . import augmentation as DA
 from .utils import resize_img, read_img
 
-
-
-def build_train_file_set(namelist, gt_postfix='_short'):
+def build_train_file_set(namelist, gt_postfix = '_short'):
     # namelist = utils.get_jpgs_once(basepath)
     shortlist = []
     long8list = []
@@ -26,10 +23,10 @@ def build_train_file_set(namelist, gt_postfix='_short'):
     for i in range(len(namelist)):
         if utils.check_file(namelist[i] + '_short.png') and \
             utils.check_file(namelist[i] + '_long8.png') and \
-             utils.check_file(namelist[i] + '_long6.png') and \
-              utils.check_file(namelist[i] + '_long4.png') and \
-               utils.check_file(namelist[i] + '_long2.png') and \
-                utils.check_file(namelist[i] + gt_postfix + '.png'):
+                utils.check_file(namelist[i] + '_long6.png') and \
+                    utils.check_file(namelist[i] + '_long4.png') and \
+                        utils.check_file(namelist[i] + '_long2.png') and \
+                            utils.check_file(namelist[i] + gt_postfix + '.png'):
             shortlist.append(namelist[i] + '_short.png')
             long8list.append(namelist[i] + '_long8.png')
             long6list.append(namelist[i] + '_long6.png')
@@ -38,7 +35,7 @@ def build_train_file_set(namelist, gt_postfix='_short'):
             gtlist.append(namelist[i] + gt_postfix + '.png')
     return shortlist, long8list, long6list, long4list, long2list, gtlist
 
-def build_file_set(namelist, gt_postfix='_short'):
+def build_file_set(namelist, gt_postfix = '_short'):
     # namelist = utils.get_jpgs_once(basepath)
     shortlist = []
     longlist = []
@@ -46,7 +43,7 @@ def build_file_set(namelist, gt_postfix='_short'):
     for i in range(len(namelist)):
         if utils.check_file(namelist[i] + '_short.png') and \
             utils.check_file(namelist[i] + '_long8.png') and \
-             utils.check_file(namelist[i] + gt_postfix + '.png'):
+                utils.check_file(namelist[i] + gt_postfix + '.png'):
             shortlist.append(namelist[i] + '_short.png')
             longlist.append(namelist[i] + '_long8.png')
             gtlist.append(namelist[i] + gt_postfix + '.png')
@@ -71,7 +68,6 @@ def add_train_sharp_file(shortlist, long8list, long6list, long4list, long2list, 
     gt += gtlist
     return short, long8, long6, long4, long2, gt
 
-
 def add_sharp_file(shortlist, longlist, gtlist, src_dir, sharp_dir):
     short, long_, gt = [], [], []
     for i in range(len(gtlist)):
@@ -85,6 +81,7 @@ def add_sharp_file(shortlist, longlist, gtlist, src_dir, sharp_dir):
     gt += gtlist
     return short, long_, gt
 
+
 class SLRGB2RGB_dataset(data.Dataset):
     def __init__(self, dataset_opt, tag):
         # General
@@ -97,7 +94,7 @@ class SLRGB2RGB_dataset(data.Dataset):
 
         if tag == 'train':
             namelist = utils.get_jpgs_once(self.opt.train_path)
-            shortlist, long8list, long6list, long4list, long2list, gtlist = build_train_file_set(namelist, gt_postfix=gt_postfix)
+            shortlist, long8list, long6list, long4list, long2list, gtlist = build_train_file_set(namelist, gt_postfix = gt_postfix)
             
             # 添加sharp数据
             if hasattr(self.opt, 'train_sharp_path'):
@@ -112,7 +109,7 @@ class SLRGB2RGB_dataset(data.Dataset):
             self.out_srgb_filelist = gtlist
         elif tag == 'val':
             namelist = utils.get_jpgs_once(self.opt.val_path)
-            shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix=gt_postfix)
+            shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix = gt_postfix)
             
             # 添加sharp数据
             if hasattr(self.opt, 'val_sharp_path'):
@@ -127,7 +124,7 @@ class SLRGB2RGB_dataset(data.Dataset):
         if hasattr(self.opt, 'blur_path'):
             if tag == 'train':
                 namelist = utils.get_blur_file_once(self.opt.blur_path.train_path)
-                shortlist, long8list, long6list, long4list, long2list, gtlist = build_train_file_set(namelist, gt_postfix=gt_postfix)
+                shortlist, long8list, long6list, long4list, long2list, gtlist = build_train_file_set(namelist, gt_postfix = gt_postfix)
                 
                 if hasattr(self.opt.blur_path, 'train_sharp_path'):
                     shortlist, long8list, long6list, long4list, long2list, gtlist = \
@@ -139,9 +136,10 @@ class SLRGB2RGB_dataset(data.Dataset):
                 self.blur_long4_filelist = long4list
                 self.blur_long2_filelist = long2list
                 self.blur_out_filelist = gtlist
+
             elif tag == 'val':
                 namelist = utils.get_blur_file_once(self.opt.blur_path.val_path)
-                shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix=gt_postfix)
+                shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix = gt_postfix)
                 
                 if hasattr(self.opt.blur_path, 'val_sharp_path'):
                     shortlist, longlist, gtlist = \
@@ -161,7 +159,7 @@ class SLRGB2RGB_dataset(data.Dataset):
         rand_w = (rand_w // min_divide) * min_divide
         return rand_h, rand_w
 
-    def crop_patch(self, in_short_img, in_long_img, out_srgb_img, patch_per_image=1, crop_size=312):
+    def crop_patch(self, in_short_img, in_long_img, out_srgb_img, patch_per_image = 1, crop_size = 312):
         in_short_imgs = []
         in_long_imgs = []
         out_srgb_imgs = []
@@ -183,8 +181,8 @@ class SLRGB2RGB_dataset(data.Dataset):
                 gt_long_patch = in_long_img[rand_h:rand_h+crop_size, rand_w:rand_w+crop_size, :]
 
                 if self.opt.shot_noise:
-                    in_short_patch = DA.add_shot_noise(in_short_patch, iso=self.opt.shot_short_iso, noise=self.opt.shot_noise_mode)
-                    in_long_patch = DA.add_shot_noise(in_long_patch, iso=self.opt.shot_long_iso, noise=self.opt.shot_noise_mode)
+                    in_short_patch = DA.add_shot_noise(in_short_patch, iso = self.opt.shot_short_iso, noise = self.opt.shot_noise_mode)
+                    in_long_patch = DA.add_shot_noise(in_long_patch, iso = self.opt.shot_long_iso, noise = self.opt.shot_noise_mode)
                 
                 elif self.opt.noise_aug:
                     a = random.randint(6, 8)
@@ -206,7 +204,7 @@ class SLRGB2RGB_dataset(data.Dataset):
 
         return in_short_img, in_long_img, out_srgb_img, gt_long_img
 
-    def get_blur_patch(self, crop_size=312):
+    def get_blur_patch(self, crop_size = 312):
         in_short_blur_patches = []
         in_long_blur_patches = []
         out_blur_patches = []
@@ -241,7 +239,7 @@ class SLRGB2RGB_dataset(data.Dataset):
             out_blur_patch = out_blur_patch.astype(np.float) / 255.0
 
             in_short_blurpatch, in_long_blurpatch, out_blur_patch, gt_long_blurpatch = \
-                self.crop_patch(in_short_blurpatch, in_long_blurpatch, out_blur_patch, patch_per_image=1, crop_size=crop_size)
+                self.crop_patch(in_short_blurpatch, in_long_blurpatch, out_blur_patch, patch_per_image = 1, crop_size = crop_size)
 
             in_short_blur_patches.append(in_short_blurpatch[0])
             in_long_blur_patches.append(in_long_blurpatch[0])
@@ -254,7 +252,6 @@ class SLRGB2RGB_dataset(data.Dataset):
         gt_long_blur_patches = np.array(gt_long_blur_patches)
 
         return in_short_blur_patches, in_long_blur_patches, out_blur_patches, gt_long_blur_patches
-
 
     def __getitem__(self, index):
 
@@ -300,8 +297,7 @@ class SLRGB2RGB_dataset(data.Dataset):
 
             if hasattr(self.opt, 'darken') and self.tag == "train":
                 if 'day' in in_short_path:
-                    darken_images = DA.darken(np.array([in_short_img, in_long_img, out_srgb_img]), \
-                            dark_prob=self.opt.darken.prob)
+                    darken_images = DA.darken(np.array([in_short_img, in_long_img, out_srgb_img]), dark_prob = self.opt.darken.prob)
                     in_short_img = darken_images[0]
                     in_long_img = darken_images[1]
                     out_srgb_img = darken_images[2]
@@ -321,8 +317,8 @@ class SLRGB2RGB_dataset(data.Dataset):
             else:
                 gt_long_img = deepcopy(in_long_img)
                 if self.opt.shot_noise:
-                    in_short_img = DA.add_shot_noise(in_short_img, iso=self.opt.shot_short_iso, noise=self.opt.shot_noise_mode)
-                    in_long_img = DA.add_shot_noise(in_long_img, iso=self.opt.shot_long_iso, noise=self.opt.shot_noise_mode)
+                    in_short_img = DA.add_shot_noise(in_short_img, iso = self.opt.shot_short_iso, noise = self.opt.shot_noise_mode)
+                    in_long_img = DA.add_shot_noise(in_long_img, iso = self.opt.shot_long_iso, noise = self.opt.shot_noise_mode)
                 elif self.opt.noise_aug:
                     a = random.randint(6, 8)
                     noise_short = np.random.normal(loc = 0.0, scale = self.opt.noise_level, size = in_short_img.shape) * 0.6 * a
@@ -340,7 +336,7 @@ class SLRGB2RGB_dataset(data.Dataset):
         # 获取blur patch，为了保证输出tensor大小一致，只有在random_crop生效的时候才会启用
         if hasattr(self.opt, 'blur_path') and self.opt.random_crop:
             # NHWC
-            in_short_blur_patches, in_long_blur_patches, out_blur_patches, gt_long_blur_patches = self.get_blur_patch(crop_size=crop_size)
+            in_short_blur_patches, in_long_blur_patches, out_blur_patches, gt_long_blur_patches = self.get_blur_patch(crop_size = crop_size)
 
             # 和原图crop的图片合并
             if out_srgb_img is None:
@@ -350,15 +346,15 @@ class SLRGB2RGB_dataset(data.Dataset):
                 gt_long_img = gt_long_blur_patches
             else:
                 if len(out_srgb_img.shape) == 3:
-                    out_srgb_img = np.concatenate((out_srgb_img[np.newaxis, :, :, :], out_blur_patches), axis=0)
-                    in_short_img = np.concatenate((in_short_img[np.newaxis, :, :, :], in_short_blur_patches), axis=0)
-                    in_long_img = np.concatenate((in_long_img[np.newaxis, :, :, :], in_long_blur_patches), axis=0)
-                    gt_long_img = np.concatenate((gt_long_img[np.newaxis, :, :, :], gt_long_blur_patches), axis=0)
+                    out_srgb_img = np.concatenate((out_srgb_img[np.newaxis, :, :, :], out_blur_patches), axis = 0)
+                    in_short_img = np.concatenate((in_short_img[np.newaxis, :, :, :], in_short_blur_patches), axis = 0)
+                    in_long_img = np.concatenate((in_long_img[np.newaxis, :, :, :], in_long_blur_patches), axis = 0)
+                    gt_long_img = np.concatenate((gt_long_img[np.newaxis, :, :, :], gt_long_blur_patches), axis = 0)
                 elif len(out_srgb_img.shape) == 4:
-                    out_srgb_img = np.concatenate((out_srgb_img, out_blur_patches), axis=0)
-                    in_short_img = np.concatenate((in_short_img, in_short_blur_patches), axis=0)
-                    in_long_img = np.concatenate((in_long_img, in_long_blur_patches), axis=0)
-                    gt_long_img = np.concatenate((gt_long_img, gt_long_blur_patches), axis=0)
+                    out_srgb_img = np.concatenate((out_srgb_img, out_blur_patches), axis = 0)
+                    in_short_img = np.concatenate((in_short_img, in_short_blur_patches), axis = 0)
+                    in_long_img = np.concatenate((in_long_img, in_long_blur_patches), axis = 0)
+                    gt_long_img = np.concatenate((gt_long_img, gt_long_blur_patches), axis = 0)
 
         # to tensor
         if len(in_short_img.shape) == 3:
@@ -373,7 +369,6 @@ class SLRGB2RGB_dataset(data.Dataset):
             gt_long_img = torch.from_numpy(gt_long_img).float().permute(0, 3, 1, 2).contiguous()
         else:
             raise ValueError('undesired shape in sample.')
-
 
         sample = {'short_img': in_short_img,
                   'long_img': in_long_img,
@@ -398,13 +393,13 @@ class SLRGB2RGB_valdataset(data.Dataset):
             gt_postfix = '_short'
         if tag == 'train':
             namelist = utils.get_jpgs_once(self.opt.train_path)
-            shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix=gt_postfix)
+            shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix = gt_postfix)
             self.in_short_filelist = shortlist
             self.in_long_filelist = longlist
             self.out_srgb_filelist = gtlist
         if tag == 'val':
             namelist = utils.get_jpgs_once(self.opt.val_path)
-            shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix=gt_postfix)
+            shortlist, longlist, gtlist = build_file_set(namelist, gt_postfix = gt_postfix)
             self.in_short_filelist = shortlist
             self.in_long_filelist = longlist
             self.out_srgb_filelist = gtlist
@@ -434,8 +429,8 @@ class SLRGB2RGB_valdataset(data.Dataset):
         out_srgb_img = out_srgb_img.astype(np.float) / 255.0
 
         if self.opt.shot_noise:
-            in_short_img = DA.add_shot_noise(in_short_img, iso=self.opt.shot_short_iso, noise=self.opt.shot_noise_mode)
-            in_long_img = DA.add_shot_noise(in_long_img, iso=self.opt.shot_long_iso, noise=self.opt.shot_noise_mode)
+            in_short_img = DA.add_shot_noise(in_short_img, iso = self.opt.shot_short_iso, noise = self.opt.shot_noise_mode)
+            in_long_img = DA.add_shot_noise(in_long_img, iso = self.opt.shot_long_iso, noise = self.opt.shot_noise_mode)
         elif self.opt.noise_aug:
             a = random.randint(6, 8)
             noise_short = np.random.normal(loc = 0.0, scale = self.opt.noise_level, size = in_short_img.shape) * 0.6 * a
@@ -487,7 +482,6 @@ def get_dataset_pngs(path):
     return ret_long, ret_short
 
 
-
 def quadra_list(imglist):
     outlist = []
     for i in range(len(imglist)):
@@ -504,7 +498,6 @@ def read_iso(file):
             if line.startswith('iso='):
                 line = line.strip()
                 return float(line.split('iso=')[1])
-
 
 
 class SLRGB2RGB_valdataset_singleimage(data.Dataset):
@@ -587,7 +580,7 @@ class TP_dataset(SLRGB2RGB_dataset):
                     ret_tensors[j].append(crop_tensor)
             
             for i in range(len(ret_tensors)):
-                ret_tensors[i] = torch.cat(ret_tensors[i], dim=0)
+                ret_tensors[i] = torch.cat(ret_tensors[i], dim = 0)
             
         else:
             ret_tensors = []
@@ -671,17 +664,17 @@ class TP_dataset(SLRGB2RGB_dataset):
             if hasattr(self.opt, 'blur_path'):
                 assert deblur_crop_size <= 1024
                 # NHWC
-                in_short_blur_patches, in_long_blur_patches, out_blur_patches, gt_long_blur_patches = self.get_blur_patch(crop_size=deblur_crop_size)
-                in_short_img = np.concatenate((in_short_img, in_short_blur_patches), axis=0)
-                in_long_img = np.concatenate((in_long_img, in_long_blur_patches), axis=0)
-                out_srgb_img = np.concatenate((out_srgb_img, out_blur_patches), axis=0)
-                gt_long_img = np.concatenate((gt_long_img, gt_long_blur_patches), axis=0)
+                in_short_blur_patches, in_long_blur_patches, out_blur_patches, gt_long_blur_patches = self.get_blur_patch(crop_size = deblur_crop_size)
+                in_short_img = np.concatenate((in_short_img, in_short_blur_patches), axis = 0)
+                in_long_img = np.concatenate((in_long_img, in_long_blur_patches), axis = 0)
+                out_srgb_img = np.concatenate((out_srgb_img, out_blur_patches), axis = 0)
+                gt_long_img = np.concatenate((gt_long_img, gt_long_blur_patches), axis = 0)
 
         else:
             gt_long_img = deepcopy(in_long_img)
             if self.opt.shot_noise:
-                in_short_img = DA.add_shot_noise(in_short_img, iso=self.opt.shot_short_iso, noise=self.opt.shot_noise_mode)
-                in_long_img = DA.add_shot_noise(in_long_img, iso=self.opt.shot_long_iso, noise=self.opt.shot_noise_mode)
+                in_short_img = DA.add_shot_noise(in_short_img, iso = self.opt.shot_short_iso, noise = self.opt.shot_noise_mode)
+                in_long_img = DA.add_shot_noise(in_long_img, iso = self.opt.shot_long_iso, noise = self.opt.shot_noise_mode)
             elif self.opt.noise_aug:
                 a = random.randint(6, 8)
                 noise_short = np.random.normal(loc = 0.0, scale = self.opt.noise_level, size = in_short_img.shape) * 0.6 * a
@@ -693,7 +686,7 @@ class TP_dataset(SLRGB2RGB_dataset):
 
         # downsample crop image for deblur
         deblur_size = self.opt.deblur_size
-        down_short_img, down_long_img, down_out_img, down_gtlong_img = resize_img([in_short_img, in_long_img, out_srgb_img, gt_long_img], size=deblur_size)
+        down_short_img, down_long_img, down_out_img, down_gtlong_img = resize_img([in_short_img, in_long_img, out_srgb_img, gt_long_img], size = deblur_size)
 
         if hasattr(self.opt, 'cutblur') and self.tag == "train":
             in_short_img = DA.cutblur(in_short_img, out_srgb_img, self.opt.cutblur.size, self.opt.cutblur.prob)
@@ -742,11 +735,11 @@ class TP_dataset_v1(TP_dataset):
     
     def downsample_tensors(self, tensors):
         """
-        对tensors下采样，再进deblurnet
+        对tensors下采样再进deblurnet
         tensors: list or Tensor
         """
         if isinstance(self.opt.deblur_size, list):
-            #deblur_size = random.sample(self.opt.deblur_size, k=1)[0]
+            #deblur_size = random.sample(self.opt.deblur_size, k = 1)[0]
             deblur_size = random.uniform(self.opt.deblur_size[0], self.opt.deblur_size[1])
             deblur_size = int(deblur_size // 16 * 16)
         else:
@@ -808,17 +801,17 @@ class TP_dataset_v1(TP_dataset):
             if hasattr(self.opt, 'blur_path'):
                 assert deblur_crop_size <= 1024
                 # NHWC
-                in_short_blur_patches, in_long_blur_patches, out_blur_patches, gt_long_blur_patches = self.get_blur_patch(crop_size=deblur_crop_size)
-                in_short_img = np.concatenate((in_short_img, in_short_blur_patches), axis=0)
-                in_long_img = np.concatenate((in_long_img, in_long_blur_patches), axis=0)
-                out_srgb_img = np.concatenate((out_srgb_img, out_blur_patches), axis=0)
-                gt_long_img = np.concatenate((gt_long_img, gt_long_blur_patches), axis=0)
+                in_short_blur_patches, in_long_blur_patches, out_blur_patches, gt_long_blur_patches = self.get_blur_patch(crop_size = deblur_crop_size)
+                in_short_img = np.concatenate((in_short_img, in_short_blur_patches), axis = 0)
+                in_long_img = np.concatenate((in_long_img, in_long_blur_patches), axis = 0)
+                out_srgb_img = np.concatenate((out_srgb_img, out_blur_patches), axis = 0)
+                gt_long_img = np.concatenate((gt_long_img, gt_long_blur_patches), axis = 0)
 
         else:
             gt_long_img = deepcopy(in_long_img)
             if self.opt.shot_noise:
-                in_short_img = DA.add_shot_noise(in_short_img, iso=self.opt.shot_short_iso, noise=self.opt.shot_noise_mode)
-                in_long_img = DA.add_shot_noise(in_long_img, iso=self.opt.shot_long_iso, noise=self.opt.shot_noise_mode)
+                in_short_img = DA.add_shot_noise(in_short_img, iso = self.opt.shot_short_iso, noise = self.opt.shot_noise_mode)
+                in_long_img = DA.add_shot_noise(in_long_img, iso = self.opt.shot_long_iso, noise = self.opt.shot_noise_mode)
             elif self.opt.noise_aug:
                 a = random.randint(6, 8)
                 noise_short = np.random.normal(loc = 0.0, scale = self.opt.noise_level, size = in_short_img.shape) * 0.6 * a
@@ -827,13 +820,6 @@ class TP_dataset_v1(TP_dataset):
                 in_long_img = in_long_img + noise_long
                 in_short_img = np.clip(in_short_img, 0, 1)
                 in_long_img = np.clip(in_long_img, 0, 1)
-
-        # downsample crop image for deblur
-        # if isinstance(self.opt.deblur_size, list):
-        #     deblur_size = random.sample(self.opt.deblur_size, k=1)[0]
-        # else:
-        #     deblur_size = self.opt.deblur_size
-        # down_short_img, down_long_img, down_out_img, down_gtlong_img = resize_img([in_short_img, in_long_img, out_srgb_img, gt_long_img], size=deblur_size)
 
         if hasattr(self.opt, 'cutblur') and self.tag == "train":
             in_short_img = DA.cutblur(in_short_img, out_srgb_img, self.opt.cutblur.size, self.opt.cutblur.prob)
@@ -863,10 +849,9 @@ class TP_dataset_v1(TP_dataset):
         return sample
 
 
-
 class TP_valdataset_singleimage(SLRGB2RGB_valdataset_singleimage):
     def __init__(self, src_path):
-        super(TP_valdataset_singleimage, self).__init__(src_path=src_path)
+        super(TP_valdataset_singleimage, self).__init__(src_path = src_path)
     
     def __getitem__(self, index):
 
@@ -880,8 +865,8 @@ class TP_valdataset_singleimage(SLRGB2RGB_valdataset_singleimage):
         in_short_img = cv2.cvtColor(in_short_img, cv2.COLOR_BGR2RGB)
         in_long_img = cv2.cvtColor(in_long_img, cv2.COLOR_BGR2RGB)
 
-        down_short_img = cv2.resize(in_short_img, (1024, 1024), interpolation=cv2.INTER_AREA)
-        down_long_img = cv2.resize(in_long_img, (1024, 1024), interpolation=cv2.INTER_AREA)
+        down_short_img = cv2.resize(in_short_img, (1024, 1024), interpolation = cv2.INTER_AREA)
+        down_long_img = cv2.resize(in_long_img, (1024, 1024), interpolation = cv2.INTER_AREA)
 
         down_short_img = down_short_img.astype(np.float) / 255.
         down_long_img = down_long_img.astype(np.float) / 255.

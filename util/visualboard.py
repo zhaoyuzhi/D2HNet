@@ -3,13 +3,11 @@ from tensorboardX import SummaryWriter
 import torchvision.utils as t_utils
 import torch
 import os
-import os.path as osp
-
 
 class VisualBoard:
 
     def __init__(self, log_path):
-        if not osp.exists(log_path):
+        if not os.path.exists(log_path):
             os.makedirs(log_path)
 
         self.writer = SummaryWriter(log_path)

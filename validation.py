@@ -81,10 +81,11 @@ def TwoPhase_Val(args):
 
     opt = args.opt
 
-    utils.check_path(os.path.join(args.save_path, 'day'))
-    utils.check_path(os.path.join(args.save_path, 'night'))
+    if args.save_deblur:
+        utils.check_path(os.path.join(args.save_path, 'day'))
+        utils.check_path(os.path.join(args.save_path, 'night'))
 
-    with open(args.opt, mode='r') as f:
+    with open(args.opt, mode = 'r') as f:
         opt = edict(yaml.load(f))
 
     # ----------------------------------------
@@ -208,31 +209,34 @@ def TwoPhase_Val(args):
 
 
 if __name__ == "__main__":
+
     # ----------------------------------------
     #        Initialize the parameters
     # ----------------------------------------
     parser = argparse.ArgumentParser()
-    parser.add_argument('--opt', type=str, default='./options/tp_denoisenet_v2_002.yaml', \
-        help='Path to option YAML file.')
-    parser.add_argument('--num_gpus', type=int, default=1, help='GPU number, 0 means cpu is used.')
-    parser.add_argument('--model_path', type=str, default='./snapshot/tp_denoisenet_v2_002/GNet/GNet-epoch-99.pkl', \
-        help='Model path to load.')
-    parser.add_argument('--val_path', type=str, \
-        default='E:\\Deblur\\Short-Long RGB to RGB Mapping\\data\\slrgb2rgb_simulated_mobile_phone\\val_no_overlap_noisy_', \
-            help='Image path to read.')
-    parser.add_argument('--val_res', type=int, default=1440, help='validation resolution')
-    parser.add_argument('--val_sharp_path', type=str, \
-        default='E:\\Deblur\\Short-Long RGB to RGB Mapping\\data\\slrgb2rgb_simulated_mobile_phone_sharp\\val_no_overlap', \
-            help='Image path to read.')
-    parser.add_argument('--save_path', type=str, \
-        default='./results_validation/tp_denoisenet_v2_002', \
-            help='Path to save images.')
-    parser.add_argument('--down_img_size', type=int, default=1024, help='down_img_size')
-    parser.add_argument('--enable_patch', type=bool, default=False, help='enable patch process.')
-    parser.add_argument('--patch_size', type=int, default=1024, help='patch size.')
-    parser.add_argument('--save_deblur', type=bool, default=True)
-    parser.add_argument('--save_residual', type=bool, default=True)
-    parser.add_argument('--postfix', type=str, default='_short')
+    parser.add_argument('--opt', type = str, \
+        default = './options/tp_denoisenet_v2_002.yaml', \
+            help='Path to option YAML file.')
+    parser.add_argument('--model_path', type = str, \
+        default = './snapshot/tp_denoisenet_v2_002/GNet/GNet-official.pkl', \
+            help = 'Model path to load.')
+    parser.add_argument('--val_path', type = str, \
+        default = './data/slrgb2rgb_simulated_mobile_phone/val_no_overlap_noisy_', \
+            help = 'Image path to read.')
+    parser.add_argument('--val_res', type = int, default = 1440, help = 'validation resolution')
+    parser.add_argument('--val_sharp_path', type = str, \
+        default = './data/slrgb2rgb_simulated_mobile_phone_sharp/val_no_overlap', \
+            help = 'Image path to ground truth.')
+    parser.add_argument('--save_path', type = str, \
+        default = './results_validation/tp_denoisenet_v2_002', \
+            help = 'Path to save images.')
+    parser.add_argument('--num_gpus', type = int, default = 1, help = 'GPU number, 0 means cpu is used.')
+    parser.add_argument('--down_img_size', type = int, default = 1024, help = 'down_img_size')
+    parser.add_argument('--enable_patch', type = bool, default = False, help = 'enable patch process, please set True if out of memory.')
+    parser.add_argument('--patch_size', type = int, default = 1024, help = 'patch size.')
+    parser.add_argument('--save_deblur', type = bool, default = False)
+    parser.add_argument('--save_residual', type = bool, default = False)
+    parser.add_argument('--postfix', type = str, default = '_short', help = 'suffix of ground truth images')
     args = parser.parse_args()
 
     TwoPhase_Val(args)

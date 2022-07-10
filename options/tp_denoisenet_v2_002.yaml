@@ -70,7 +70,7 @@ Loss:
     weight: 100.
     mode: 'l1'
   VGGLoss:
-    weight: 1.                          # user can set it to 0
+    weight: 1.                          # users can set it to 0
     args:
       vgg_model_path: ./pretrained_models/vgg16-397923af.pth
 

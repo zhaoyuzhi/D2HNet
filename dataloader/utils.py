@@ -1,8 +1,5 @@
 import cv2
 import numpy as np
-import sys
-sys.path.append('/mnt/lustre/share/pymc/py3')
-
 
 def resize_img(imgs, size):
     """
@@ -47,10 +44,9 @@ def read_img(opt, path):
 
  
 def sobel_xy(img):
-    sobelX = cv2.Sobel(img,cv2.CV_64F,1,0)#x方向的梯度
-    sobelY = cv2.Sobel(img,cv2.CV_64F,0,1)#y方向的梯度
-    sobelX = np.uint8(np.absolute(sobelX))#x方向梯度的绝对值
-    sobelY = np.uint8(np.absolute(sobelY))#y方向梯度的绝对值
-    sobelCombined = cv2.bitwise_or(sobelX,sobelY)#
+    sobelX = cv2.Sobel(img,cv2.CV_64F,1,0)              # x-direction gradient
+    sobelY = cv2.Sobel(img,cv2.CV_64F,0,1)              # y-direction gradient
+    sobelX = np.uint8(np.absolute(sobelX))              # x-direction gradient, absolute value
+    sobelY = np.uint8(np.absolute(sobelY))              # y-direction gradient, absolute value
+    sobelCombined = cv2.bitwise_or(sobelX,sobelY)
     return sobelCombined
-

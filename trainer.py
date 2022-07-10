@@ -1,5 +1,4 @@
 import os
-import os.path as osp
 import time
 import datetime
 import torch
@@ -19,11 +18,11 @@ from models.utils import create_generator, create_discriminator, create_generato
 
 class Trainer(TrainingModule):
 
-    def __init__(self, opt, num_gpus, rank=None, world_size=None):
-        super(Trainer, self).__init__(opt=opt,
-                                      num_gpus=num_gpus,
-                                      rank=rank,
-                                      world_size=world_size)
+    def __init__(self, opt, num_gpus, rank = None, world_size = None):
+        super(Trainer, self).__init__(opt = opt,
+                                      num_gpus = num_gpus,
+                                      rank = rank,
+                                      world_size = world_size)
 
         self.Training_config = self.opt.Training_config
         self.optim_config = self.opt.Optimizer
@@ -34,7 +33,7 @@ class Trainer(TrainingModule):
         self.G = self.wrapper(self.G)
         self.D = self.wrapper(self.D)
 
-        self.LM = LossManager(self.opt.Loss, num_gpus=num_gpus)
+        self.LM = LossManager(self.opt.Loss, num_gpus = num_gpus)
 
         self._init_dataloader()
         self._init_optim()
@@ -47,20 +46,16 @@ class Trainer(TrainingModule):
         print('The overall number of validation images:', len(val_dataset))
 
         # Define the dataloader
-        self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.Training_config.train_batch_size, shuffle=True,
-                                                   num_workers=self.Training_config.num_workers, pin_memory=True)
-        self.val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=self.Training_config.val_batch_size, shuffle=False,
-                                                 num_workers=self.Training_config.num_workers, pin_memory=True)
+        self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size = self.Training_config.train_batch_size, shuffle = True, num_workers = self.Training_config.num_workers, pin_memory = True)
+        self.val_loader = torch.utils.data.DataLoader(val_dataset, batch_size = self.Training_config.val_batch_size, shuffle = False, num_workers = self.Training_config.num_workers, pin_memory = True)
 
     def _init_optim(self):
         if self.optim_config.name == "Adam":
-            self.optim_G = torch.optim.Adam(self.G.parameters(), lr=self.optim_config.args.lr_g, betas=(self.optim_config.args.b1, self.optim_config.args.b2),
-                                            weight_decay=self.optim_config.args.weight_decay)
-            self.optim_D = torch.optim.Adam(self.D.parameters(), lr=self.optim_config.args.lr_d, betas=(self.optim_config.args.b1, self.optim_config.args.b2),
-                                            weight_decay=self.optim_config.args.weight_decay)
+            self.optim_G = torch.optim.Adam(self.G.parameters(), lr = self.optim_config.args.lr_g, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
+            self.optim_D = torch.optim.Adam(self.D.parameters(), lr = self.optim_config.args.lr_d, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
         elif self.optim_config.name == "SGD":
-            self.optim_G = torch.optim.SGD(self.G.parameters(), lr=self.optim_config.args.lr_g)
-            self.optim_D = torch.optim.SGD(self.D.parameters(), lr=self.optim_config.args.lr_d)
+            self.optim_G = torch.optim.SGD(self.G.parameters(), lr = self.optim_config.args.lr_g)
+            self.optim_D = torch.optim.SGD(self.D.parameters(), lr = self.optim_config.args.lr_d)
 
     def train(self):
         # Count start time
@@ -131,8 +126,8 @@ class Trainer(TrainingModule):
 
                 # record loss
                 if iters_done % self.Training_config.show_loss_iter == 0:
-                    self.add_scalars(main_tag='G_loss', tag_scalar_dict=G_loss_info, global_step=iters_done)
-                    self.add_scalars(main_tag='D_loss', tag_scalar_dict=D_loss_info, global_step=iters_done)
+                    self.add_scalars(main_tag = 'G_loss', tag_scalar_dict = G_loss_info, global_step = iters_done)
+                    self.add_scalars(main_tag = 'D_loss', tag_scalar_dict = D_loss_info, global_step = iters_done)
                 if iters_done % self.Training_config.show_img_iter == 0:
                     vis_imgs = [short_img, long_img, RGBout_img, gt_long_img]
                     if isinstance(outs, list):
@@ -183,7 +178,7 @@ class Trainer(TrainingModule):
             if epoch % 1 == 0:
                 img_list = [short_img, long_img, out, RGBout_img]
                 name_list = ['inshort', 'inlong', 'pred', 'gt']
-                utils.save_sample_png(sample_folder=osp.join(self.save_folder, 'sample'), sample_name ='train_epoch%d' % (epoch + 1), img_list = img_list, name_list = name_list, pixel_max_cnt = 255)
+                utils.save_sample_png(sample_folder = os.path.join(self.save_folder, 'sample'), sample_name = 'train_epoch%d' % (epoch + 1), img_list = img_list, name_list = name_list, pixel_max_cnt = 255)
 
             # if epoch % 5 == 0:
             self._validate(epoch)
@@ -232,22 +227,22 @@ class Trainer(TrainingModule):
             night_outs, night_gts = [], []
             for idx in range(len(short_paths)):
                 if 'day' in short_paths[idx]:
-                    day_outs.append(out[idx].unsqueeze(dim=0))
-                    day_gts.append(RGBout_img[idx].unsqueeze(dim=0))
+                    day_outs.append(out[idx].unsqueeze(dim = 0))
+                    day_gts.append(RGBout_img[idx].unsqueeze(dim = 0))
                 elif 'night' in short_paths[idx]:
-                    night_outs.append(out[idx].unsqueeze(dim=0))
-                    night_gts.append(RGBout_img[idx].unsqueeze(dim=0))
+                    night_outs.append(out[idx].unsqueeze(dim = 0))
+                    night_gts.append(RGBout_img[idx].unsqueeze(dim = 0))
 
             if len(day_outs) >= 1:
-                day_outs = torch.cat(day_outs, dim=0)
-                day_gts = torch.cat(day_gts, dim=0)
+                day_outs = torch.cat(day_outs, dim = 0)
+                day_gts = torch.cat(day_gts, dim = 0)
                 val_day_PSNR += utils.psnr(day_outs, day_gts, 1) * day_outs.shape[0]
                 val_day_SSIM += utils.ssim(day_outs, day_gts) * day_outs.shape[0]
                 num_of_val_day += day_outs.shape[0]
 
             if len(night_outs) >= 1:
-                night_outs = torch.cat(night_outs, dim=0)
-                night_gts = torch.cat(night_gts, dim=0)
+                night_outs = torch.cat(night_outs, dim = 0)
+                night_gts = torch.cat(night_gts, dim = 0)
                 val_night_PSNR += utils.psnr(night_outs, night_gts, 1) * night_outs.shape[0]
                 val_night_SSIM += utils.ssim(night_outs, night_gts) * night_outs.shape[0]
                 num_of_val_night += night_outs.shape[0]
@@ -265,12 +260,12 @@ class Trainer(TrainingModule):
         val_night_PSNR = val_night_PSNR / num_of_val_night
         val_night_SSIM = val_night_SSIM / num_of_val_night
 
-        self.add_scalar('val_PSNR', val_PSNR, global_step=epoch)
-        self.add_scalar('val_SSIM', val_SSIM, global_step=epoch)
-        self.add_scalar('val_day_PSNR', val_day_PSNR, global_step=epoch)
-        self.add_scalar('val_day_SSIM', val_day_SSIM, global_step=epoch)
-        self.add_scalar('val_night_PSNR', val_night_PSNR, global_step=epoch)
-        self.add_scalar('val_night_SSIM', val_night_SSIM, global_step=epoch)
+        self.add_scalar('val_PSNR', val_PSNR, global_step = epoch)
+        self.add_scalar('val_SSIM', val_SSIM, global_step = epoch)
+        self.add_scalar('val_day_PSNR', val_day_PSNR, global_step = epoch)
+        self.add_scalar('val_day_SSIM', val_day_SSIM, global_step = epoch)
+        self.add_scalar('val_night_PSNR', val_night_PSNR, global_step = epoch)
+        self.add_scalar('val_night_SSIM', val_night_SSIM, global_step = epoch)
 
         self.G.train()
 
@@ -279,11 +274,11 @@ class Trainer(TrainingModule):
 
 class TwoPhaseTrainer(TrainingModule):
 
-    def __init__(self, opt, num_gpus, rank=None, world_size=None):
-        super(TwoPhaseTrainer, self).__init__(opt=opt,
-                                              num_gpus=num_gpus,
-                                              rank=rank,
-                                              world_size=world_size)
+    def __init__(self, opt, num_gpus, rank = None, world_size = None):
+        super(TwoPhaseTrainer, self).__init__(opt = opt,
+                                              num_gpus = num_gpus,
+                                              rank = rank,
+                                              world_size = world_size)
 
         self.Training_config = self.opt.Training_config
         self.optim_config = self.opt.Optimizer
@@ -306,7 +301,7 @@ class TwoPhaseTrainer(TrainingModule):
         # to support multi gpu or distributed training
         self.G = self.wrapper(self.G)
 
-        self.LM = LossManager(self.opt.Loss, num_gpus=num_gpus)
+        self.LM = LossManager(self.opt.Loss, num_gpus = num_gpus)
 
         self._init_dataloader()
         self._init_optim()
@@ -319,23 +314,18 @@ class TwoPhaseTrainer(TrainingModule):
         print('The overall number of validation images:', len(val_dataset))
 
         # Define the dataloader
-        self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=self.Training_config.train_batch_size, shuffle=True,
-                                                   num_workers=self.Training_config.num_workers, pin_memory=True)
-        self.val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=self.Training_config.val_batch_size, shuffle=False,
-                                                 num_workers=self.Training_config.num_workers, pin_memory=True)
+        self.train_loader = torch.utils.data.DataLoader(train_dataset, batch_size = self.Training_config.train_batch_size, shuffle = True, num_workers = self.Training_config.num_workers, pin_memory = True)
+        self.val_loader = torch.utils.data.DataLoader(val_dataset, batch_size = self.Training_config.val_batch_size, shuffle = False, num_workers = self.Training_config.num_workers, pin_memory = True)
 
     def _init_optim(self):
         if self.optim_config.name == "Adam":
-            self.optim_G = torch.optim.Adam(self.G.parameters(), lr=self.optim_config.args.lr_g, betas=(self.optim_config.args.b1, self.optim_config.args.b2),
-                                            weight_decay=self.optim_config.args.weight_decay)
-            # self.optim_D = torch.optim.Adam(self.D.parameters(), lr=self.optim_config.args.lr_d, betas=(self.optim_config.args.b1, self.optim_config.args.b2),
-            #                                 weight_decay=self.optim_config.args.weight_decay)
+            self.optim_G = torch.optim.Adam(self.G.parameters(), lr = self.optim_config.args.lr_g, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
+            self.optim_D = torch.optim.Adam(self.D.parameters(), lr = self.optim_config.args.lr_d, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
         elif self.optim_config.name == "SGD":
-            self.optim_G = torch.optim.SGD(self.G.parameters(), lr=self.optim_config.args.lr_g)
-            # self.optim_D = torch.optim.SGD(self.D.parameters(), lr=self.optim_config.args.lr_d)
+            self.optim_G = torch.optim.SGD(self.G.parameters(), lr = self.optim_config.args.lr_g)
+            self.optim_D = torch.optim.SGD(self.D.parameters(), lr = self.optim_config.args.lr_d)
         elif self.optim_config.name == "Adamw":
-            self.optim_G = AdamW(self.G.parameters(), lr=self.optim_config.args.lr_g, betas=(self.optim_config.args.b1, self.optim_config.args.b2),
-                                 weight_decay=self.optim_config.args.weight_decay)
+            self.optim_G = AdamW(self.G.parameters(), lr = self.optim_config.args.lr_g, betas = (self.optim_config.args.b1, self.optim_config.args.b2), weight_decay = self.optim_config.args.weight_decay)
         
 
     def train(self):
@@ -353,18 +343,6 @@ class TwoPhaseTrainer(TrainingModule):
                 print(i, self.device)
 
                 # ========= Get data ==================
-                # down_short_img = data['down_short_img'].to(self.device)
-                # down_long_img = data['down_long_img'].to(self.device)
-                # down_out_img = data['down_out_img'].to(self.device)
-                # down_gtlong_img = data['down_gtlong_img'].to(self.device)
-
-                # if len(down_short_img.shape) == 5:
-                #     _, _, c, h, w = down_short_img.shape
-                #     down_short_img = down_short_img.view(-1, c, h, w)
-                #     down_long_img = down_long_img.view(-1, c, h, w)
-                #     down_out_img = down_out_img.view(-1, c, h, w)
-                #     down_gtlong_img = down_gtlong_img.view(-1, c, h, w)
-
                 short_img = data['short_img'].to(self.device)
                 long_img = data['long_img'].to(self.device)
                 RGBout_img = data['RGBout_img'].to(self.device)
@@ -376,19 +354,6 @@ class TwoPhaseTrainer(TrainingModule):
                     long_img = long_img.view(-1, C, H, W)
                     RGBout_img = RGBout_img.view(-1, C, H, W)
                     gt_long_img = gt_long_img.view(-1, C, H, W)
-
-                # if self.Training_config.phase == 'denoise':
-                #     short_img = data['short_img'].to(self.device)
-                #     long_img = data['long_img'].to(self.device)
-                #     RGBout_img = data['RGBout_img'].to(self.device)
-                #     gt_long_img = data['gt_long_img'].to(self.device)
-
-                #     if len(short_img.shape) == 5:
-                #         _, _, C, H, W = short_img.shape
-                #         short_img = short_img.view(-1, C, H, W)
-                #         long_img = long_img.view(-1, C, H, W)
-                #         RGBout_img = RGBout_img.view(-1, C, H, W)
-                #         gt_long_img = gt_long_img.view(-1, C, H, W)
 
                 down_short_img, down_long_img, down_out_img, down_gtlong_img = \
                     self.train_loader.dataset.downsample_tensors([short_img, long_img, RGBout_img, gt_long_img])
@@ -428,7 +393,7 @@ class TwoPhaseTrainer(TrainingModule):
 
                 # record loss
                 if iters_done % self.Training_config.show_loss_iter == 0:
-                    self.add_scalars(main_tag='G_loss', tag_scalar_dict=G_loss_info, global_step=iters_done)
+                    self.add_scalars(main_tag = 'G_loss', tag_scalar_dict = G_loss_info, global_step = iters_done)
                 if iters_done % self.Training_config.show_img_iter == 0:
                     if self.Training_config.phase == 'deblur':
                         vis_imgs = [down_short_img, down_long_img, down_out_img]
@@ -465,19 +430,6 @@ class TwoPhaseTrainer(TrainingModule):
         for j, data in enumerate(self.val_loader):
 
             # ========= Get data ==================
-            # down_short_img = data['down_short_img'].to(self.device)
-            # down_long_img = data['down_long_img'].to(self.device)
-            # down_out_img = data['down_out_img'].to(self.device)
-            # down_gtlong_img = data['down_gtlong_img'].to(self.device)
-
-            # if len(down_short_img.shape) == 5:
-            #     _, _, c, h, w = down_short_img.shape
-            #     down_short_img = down_short_img.view(-1, c, h, w)
-            #     down_long_img = down_long_img.view(-1, c, h, w)
-            #     down_out_img = down_out_img.view(-1, c, h, w)
-            #     down_gtlong_img = down_gtlong_img.view(-1, c, h, w)
-
-            # if self.Training_config.phase == 'denoise':
             short_img = data['short_img'].to(self.device)
             long_img = data['long_img'].to(self.device)
             RGBout_img = data['RGBout_img'].to(self.device)
@@ -500,7 +452,7 @@ class TwoPhaseTrainer(TrainingModule):
                     outs = self.G(down_short_img, down_long_img)
                 elif self.Training_config.phase == 'denoise':
                     deblur_out = self.deblurNet(down_short_img, down_long_img).detach()
-                    deblur_out = F.upsample(deblur_out, size=(H, W), mode='bilinear', align_corners=False)
+                    deblur_out = F.upsample(deblur_out, size = (H, W), mode = 'bilinear', align_corners = False)
                     deblur_out = deblur_out.clamp(0.0, 1.0)
                     short_img, long_img, RGBout_img, deblur_out = \
                         self.train_loader.dataset.crop_tensor_patch([short_img, long_img, RGBout_img, deblur_out])
@@ -528,7 +480,7 @@ class TwoPhaseTrainer(TrainingModule):
         val_PSNR = val_PSNR / num_of_val_image
         val_SSIM = val_SSIM / num_of_val_image
 
-        self.add_scalar('val_PSNR', val_PSNR, global_step=epoch)
-        self.add_scalar('val_SSIM', val_SSIM, global_step=epoch)
+        self.add_scalar('val_PSNR', val_PSNR, global_step = epoch)
+        self.add_scalar('val_SSIM', val_SSIM, global_step = epoch)
 
         self.G.train()

@@ -24,7 +24,6 @@ class PatchGenerator(object):
         H_block_num = int(np.ceil((H - padding * 2) / (patch_size - padding * 2)))
         W_block_num = int(np.ceil((W - padding * 2) / (patch_size - padding * 2)))
 
-
         for i in range(H_block_num):
             h = i * (patch_size - 2 * padding)
             if i == 0:
@@ -51,5 +50,3 @@ class PatchGenerator(object):
                     right_padding = 0
                 
                 yield h, w, top_padding, left_padding, bottom_padding, right_padding
-
-

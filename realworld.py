@@ -4,7 +4,6 @@ import torch.nn.functional as F
 import yaml
 from easydict import EasyDict as edict
 import math
-import os.path as osp
 import os
 
 from util import utils
@@ -17,10 +16,10 @@ from util.patch_gen import PatchGenerator
 def OnePhase_Test(args):
     opt = args.opt
 
-    if not osp.exists(args.save_path):
+    if not os.path.exists(args.save_path):
         os.makedirs(args.save_path)
 
-    with open(args.opt, mode='r') as f:
+    with open(args.opt, mode = 'r') as f:
         opt = edict(yaml.load(f))
 
     generator = create_generator_val(opt.GNet, args.model_path, force_load=True)
@@ -89,21 +88,21 @@ def OnePhase_Test(args):
         ### Sample data every epoch
         img_list = [short_img, long_img, out]
         name_list = ['inshort_%d' % short_iso, 'inlong_%d' % long_iso, 'pred_' + args.postfix]
-        utils.save_sample_png(sample_folder = args.save_path, sample_name ='val_%d' % (i + 1), img_list = img_list,\
+        utils.save_sample_png(sample_folder = args.save_path, sample_name = 'val_%d' % (i + 1), img_list = img_list,\
             name_list = name_list, pixel_max_cnt = 255)
 
         if args.save_deblur and deblur_out is not None:
             deblur_out = deblur_out[:, [2, 1, 0], :, :]
             img_list = [deblur_out]
             name_list = ['deblur' + '_' + args.postfix]
-            utils.save_sample_png(sample_folder=args.save_path, sample_name='val_%d' % (i+1), img_list=img_list, \
-                name_list=name_list, pixel_max_cnt=255)
+            utils.save_sample_png(sample_folder = args.save_path, sample_name = 'val_%d' % (i+1), \
+                img_list = img_list, name_list = name_list, pixel_max_cnt = 255)
 
 
 def TwoPhase_Test(args):
     opt = args.opt
 
-    if not osp.exists(args.save_path):
+    if not os.path.exists(args.save_path):
         os.makedirs(args.save_path)
 
     with open(args.opt, mode='r') as f:
@@ -203,23 +202,24 @@ def TwoPhase_Test(args):
             deblur_out = deblur_out[:, [2, 1, 0], :, :]
                 
         if args.save_deblur and deblur_out is not None:
-            #img_list += [short_img]
-            #name_list += ['short']
-            #img_list += [long_img]
-            #name_list += ['long']
-            #img_list += [deblur_out]
-            #name_list += ['firstout']
+            img_list += [short_img]
+            name_list += ['short']
+            img_list += [long_img]
+            name_list += ['long']
+            img_list += [deblur_out]
+            name_list += ['firstout']
             if opt.Training_config.phase == 'denoise':
                 img_list += [out]
                 name_list += ['secondout']
                 if tag == 1:
                     img_list += [attn]
                     name_list += ['attn']
-            utils.save_sample_png(sample_folder=args.save_path, sample_name='val_%d' % (i+1), img_list=img_list, \
-                name_list=name_list, pixel_max_cnt=255)
+            utils.save_sample_png(sample_folder = args.save_path, sample_name = 'val_%d' % (i+1), \
+                img_list = img_list, name_list = name_list, pixel_max_cnt = 255)
 
 
 if __name__ == "__main__":
+
     # ----------------------------------------
     #        Initialize the parameters
     # ----------------------------------------
@@ -228,14 +228,14 @@ if __name__ == "__main__":
         default = './options/tp_denoisenet_v2_002.yaml', \
             help = 'Path to option YAML file.')
     parser.add_argument('--model_path', type = str, \
-        default = './snapshot/tp_denoisenet_v2_002/GNet/GNet-epoch-99.pkl', \
+        default = './snapshot/tp_denoisenet_v2_002/GNet/GNet-official.pkl', \
             help = 'Model path to load.')
-    parser.add_argument('--src_path', type=str, \
-        #default = 'G:\\Deblur\\Short-Long RGB to RGB Mapping\\data\\mobile_phone\\long8_short1_20200701', \
-        default = 'G:\\Deblur\\Short-Long RGB to RGB Mapping\\data\\mobile_phone\\long8_short1_20200701_rotation', \
+    parser.add_argument('--src_path', type = str, \
+        #default = './data/Xiaomi_Mi_Note_10_photos', \
+        default = './data/Xiaomi_Mi_Note_10_photos', \
             help = 'Image path to read.')
-    parser.add_argument('--save_path', type=str, \
-        default = './test_result', \
+    parser.add_argument('--save_path', type = str, \
+        default = './results_real_photo', \
             help = 'Path to save images.')
     parser.add_argument('--num_gpus', type = int, default = 1, help = 'GPU number, 0 means cpu is used.')
     parser.add_argument('--enable_patch', type = bool, default = True, help = 'enable patch process.')
@@ -244,6 +244,5 @@ if __name__ == "__main__":
     parser.add_argument('--postfix', type = str, default = '')
     args = parser.parse_args()
 
-    # OnePhase_Test(args)
     TwoPhase_Test(args)
     
