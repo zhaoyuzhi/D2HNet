@@ -6,6 +6,7 @@ import numpy as np
 
 from dcn.deform_conv import ModulatedDeformConvPack2 as DCN
 
+
 class Align_module(nn.Module):
 
     def __init__(self, channels = 32, groups = 8):
@@ -38,7 +39,8 @@ class Align_module(nn.Module):
         offset = self.offset_conv3(offset)
         offset = self.lrelu(offset)
 
-        # deformable conv
-        out = self.lrelu(self.dcnpack([long_fea, offset]))
+        # apply deformable conv
+        out = self.dcnpack([long_fea, offset])
+        out = self.lrelu(out)
 
         return out, offset

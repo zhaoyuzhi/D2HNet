@@ -1,6 +1,6 @@
+import cv2
 import numpy as np
 from PIL import Image, ImageEnhance
-import cv2
 import random
 import colour_demosaicing
 import math

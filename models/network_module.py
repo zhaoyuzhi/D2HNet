@@ -6,6 +6,7 @@ from torch.nn import Parameter
 
 import numpy as np
 
+
 # ----------------------------------------
 #               Conv2d Block
 # ----------------------------------------
@@ -31,11 +32,9 @@ class Conv2dLayer(nn.Module):
 
         # Initialize the convolution layers
         if sn:
-            self.layers += [SpectralNorm(nn.Conv2d(in_channels, out_channels, kernel_size, stride,
-                                                 padding = p, dilation = dilation))]
+            self.layers += [SpectralNorm(nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding = p, dilation = dilation))]
         else:
-            self.layers += [nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding = p,
-                                    dilation = dilation)]
+            self.layers += [nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding = p, dilation = dilation)]
 
         # Initialize the normalization type
         if norm == 'bn':
@@ -73,6 +72,7 @@ class Conv2dLayer(nn.Module):
         x = self.layers(x)
         return x
 
+
 class TransposeConv2dLayer(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride = 1, padding = 0, dilation = 1, pad_type = 'zero', activation = 'lrelu', norm = 'none', sn = True, scale_factor = 2):
         super(TransposeConv2dLayer, self).__init__()
@@ -84,6 +84,7 @@ class TransposeConv2dLayer(nn.Module):
         x = F.interpolate(x, scale_factor = self.scale_factor, mode = 'nearest')
         x = self.conv2d(x)
         return x
+
 
 # ----------------------------------------
 #                ResBlock
@@ -103,6 +104,7 @@ class ResBlock(nn.Module):
         out = self.conv2d(x)
         out = 0.1 * out + residual
         return out
+
 
 # ----------------------------------------
 #            ConvLSTM2d Block
@@ -154,6 +156,7 @@ class ConvLSTM2d(nn.Module):
 
         return hidden, cell
 
+
 # ----------------------------------------
 #               Layer Norm
 # ----------------------------------------
@@ -185,11 +188,13 @@ class LayerNorm(nn.Module):
             x = x * self.gamma.view(*shape) + self.beta.view(*shape)
         return x
 
+
 # ----------------------------------------
 #           Spectral Norm Block
 # ----------------------------------------
 def l2normalize(v, eps = 1e-12):
     return v / (v.norm() + eps)
+
 
 class SpectralNorm(nn.Module):
     def __init__(self, module, name = 'weight', power_iterations = 1):
@@ -245,6 +250,7 @@ class SpectralNorm(nn.Module):
         self._update_u_v()
         return self.module.forward(*args)
 
+
 # ----------------------------------------
 #              PixelShuffle
 # ----------------------------------------
@@ -284,6 +290,7 @@ class PixelShuffleAlign(nn.Module):
         x = x.reshape(-1, c, h, w)
         return x
 
+
 class PixelUnShuffleAlign(nn.Module):
 
     def __init__(self, downscale_factor: int = 2, mode: str = 'caffe'):
@@ -314,6 +321,7 @@ class PixelUnShuffleAlign(nn.Module):
         x = x.reshape(-1, c, h, w)
         return x
 
+
 # ----------------------------------------
 #                DWT / IDWT
 # ----------------------------------------
@@ -331,6 +339,7 @@ def dwt_init(x):
     x_HH = x1 - x2 - x3 + x4
 
     return torch.cat((x_LL, x_HL, x_LH, x_HH), 1)
+
 
 def iwt_init(x):
     r = 2
@@ -352,6 +361,7 @@ def iwt_init(x):
 
     return h
 
+
 class DWT(nn.Module):
     def __init__(self):
         super(DWT, self).__init__()
@@ -360,6 +370,7 @@ class DWT(nn.Module):
     def forward(self, x):
         return dwt_init(x)
 
+
 class IWT(nn.Module):
     def __init__(self):
         super(IWT, self).__init__()
@@ -367,6 +378,7 @@ class IWT(nn.Module):
 
     def forward(self, x):
         return iwt_init(x)
+
 
 # ----------------------------------------
 #              Self Attention
@@ -424,6 +436,7 @@ class AttnModule(nn.Module):
 
         return out, attention
 
+
 # ----------------------------------------
 #                GradLayer
 # ----------------------------------------
@@ -460,6 +473,7 @@ class GradLayer(nn.Module):
         x = torch.sqrt(torch.pow(x_v, 2) + torch.pow(x_h, 2) + 1e-6)
 
         return x
+
 
 class BlurLayer(nn.Module):
     """Implements the blur layer used in StyleGAN."""

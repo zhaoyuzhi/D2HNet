@@ -5,7 +5,7 @@ import torch.distributed as dist
 
 
 class Parallel(object):
-    def __init__(self, num_gpus, rank=None, world_size=None):
+    def __init__(self, num_gpus, rank = None, world_size = None):
         # set device
         if num_gpus <= 0:
             device = torch.device("cpu")
@@ -37,7 +37,7 @@ class Parallel(object):
 
     def wrapper_dist(self, entry):
         entry = entry.to(self.device_ids[0])
-        return DDP(entry, device_ids=self.device_ids)
+        return DDP(entry, device_ids = self.device_ids)
 
     def cleanup(self):
         dist.destroy_process_group()

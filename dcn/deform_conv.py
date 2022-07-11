@@ -108,8 +108,7 @@ class ModulatedDeformConvFunction(Function):
             bias = input.new_empty(1)  # fake tensor
         if not input.is_cuda:
             raise NotImplementedError
-        if weight.requires_grad or mask.requires_grad or offset.requires_grad \
-                or input.requires_grad:
+        if weight.requires_grad or mask.requires_grad or offset.requires_grad or input.requires_grad:
             ctx.save_for_backward(input, offset, mask, weight, bias)
         output = input.new_empty(ModulatedDeformConvFunction._infer_shape(ctx, input, weight))
         ctx._bufs = [input.new_empty(0), input.new_empty(0)]
@@ -272,6 +271,7 @@ class ModulatedDeformConvPack(ModulatedDeformConv):
         self.conv_offset_mask.bias.data.zero_()
 
     def forward(self, x):
+
         if self.extra_offset_mask:
             # x = [input, features]
             out = self.conv_offset_mask(x[1])
@@ -289,8 +289,8 @@ class ModulatedDeformConvPack(ModulatedDeformConv):
         return modulated_deform_conv(x, offset, mask, self.weight, self.bias, self.stride,
                                      self.padding, self.dilation, self.groups,
                                      self.deformable_groups)
-#==============================================================================#
-#==============================================================================#
+
+
 class ModulatedDeformConvPack2(ModulatedDeformConv):
     def __init__(self, *args, extra_offset_mask=False, offset_in_channel=32, **kwargs):
         super(ModulatedDeformConvPack2, self).__init__(*args, **kwargs)
@@ -308,16 +308,20 @@ class ModulatedDeformConvPack2(ModulatedDeformConv):
         self.conv_offset_mask.bias.data.zero_()
 
     def forward(self, x):
+
+        # get offsets and mask
         if self.extra_offset_mask:
             # x = [input, features]
             out = self.conv_offset_mask(x[1])
             x = x[0]
         else:
             out = self.conv_offset_mask(x)
+        
+        # get y offset, x offset, and modulation scalars
         o1, o2, mask = torch.chunk(out, 3, dim=1)
-        #print(o1[0,:,o1.size()[2]//2,o1.size()[3]//2])
-        #print(o2[0,:,o1.size()[2]//2,o1.size()[3]//2])
-        offset = torch.cat((o1, o2), dim=1)
+        #print(o1.shape, o2.shape, mask.shape)
+        #print(o1[0, :, :, :])
+        offset = torch.cat((o1, o2), dim=1)                 # if users want to visualize the offsets, return this variable
         mask = torch.sigmoid(mask)
 
         offset_mean = torch.mean(torch.abs(offset))

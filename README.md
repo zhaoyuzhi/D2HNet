@@ -4,6 +4,8 @@
 
 This project is a night image restoration framework called D2HNet by jointly denoising and deblurring successively captured long- and short-exposure images. To train and benchmark D2HNet, we create a large-scale D2-Dataset.
 
+arxiv: https://arxiv.org/abs/2207.03294
+
 ![img1](./img/img1.png)
 
 ## 2 Dependency
@@ -36,7 +38,7 @@ python setup.py build develop
 
 ### 3.1 D2-Dataset
 
-Users can find the full D2-Dataset through the [link](https://portland-my.sharepoint.com/:f:/g/personal/yzzhao2-c_my_cityu_edu_hk/EgAgxXmhdExEm53S5vlkfeABg5ACBcYxvcyr7gMDWzS0sw?e=EK1sKa). Just unzip each `zip` file in the corresponding path. Since the full dataset is quite large (554Gb), users may download seperated dataset, and the links are given below.
+Users can find the full D2-Dataset through the [link](https://portland-my.sharepoint.com/:f:/g/personal/yzzhao2-c_my_cityu_edu_hk/EgAgxXmhdExEm53S5vlkfeABg5ACBcYxvcyr7gMDWzS0sw?e=EK1sKa). Just unzip each `zip` file in the corresponding path. Since the full dataset is quite large (about 555Gb), users may download seperated dataset, and the links are given below.
 
 | Name | Description | Resolution | Numbers | Link / Size |
 | ---- | ---- | :----: | :----: | :----: |
@@ -76,6 +78,8 @@ Users need to change the parameters of `train.py` to train a specific network, a
 | --num_gpus | numbers of GPUs to be used | 2 | 2 |
 | --save_path | saving path to trained models | 'snapshot/tp_deblurnet_v2_002' | 'snapshot/tp_denoisenet_v2_002' |
 | --log_path | saving path to tensorboard results | 'log_pt/tp_deblurnet_v2_002' | 'log_pt/tp_denoisenet_v2_002' |
+
+The `EnhanceNet` in the paper corresponds to the `DenoiseNet` in the code.
 
 ### 4.2 Hyper-parameters of the network
 
@@ -131,7 +135,7 @@ Noisy long- and short-exposure real-world pairs are provided. Please change `--s
 python realworld.py
 ```
 
-Result images will be automatically saved in the `results_real_photo`.
+Resulting images will be automatically saved in the `results_real_photo`.
 
 ## 6 Citation
 

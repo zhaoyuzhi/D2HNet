@@ -2,6 +2,7 @@ import torch
 
 from models import network
 
+
 # ----------------------------------------
 #                 Network
 # ----------------------------------------
@@ -20,6 +21,7 @@ def create_generator(GNet_opt):
         print('Generator is loaded!')
     return generator
 
+
 def create_generator_val(GNet_opt, model_path = None, force_load = False):
     # Initialize the network
     # generator = network.Mainstream(GNet_opt.args)
@@ -34,6 +36,7 @@ def create_generator_val(GNet_opt, model_path = None, force_load = False):
         print('Generator is loaded!')
     return generator
 
+
 def create_discriminator(DNet_opt):
     # Initialize the network
     # discriminator = network.PatchDiscriminator70(DNet_opt.args)
@@ -42,6 +45,7 @@ def create_discriminator(DNet_opt):
     network.weights_init(discriminator, init_type = DNet_opt.init_type, init_gain = DNet_opt.init_gain)
     print('Discriminators is created!')
     return discriminator
+
 
 def load_dict(process_net, pretrained_net):
     # Get the dict from pre-trained network

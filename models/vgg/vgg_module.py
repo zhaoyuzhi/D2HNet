@@ -104,11 +104,3 @@ class VGG(nn.Module, metaclass = Singleton):
         # conv4_2 = self.conv4_2(conv3_2)
         # conv4_3 = self.conv4_3(conv4_2)
         # return [conv2_2, conv3_2, conv4_2, conv4_3]
-
-
-            
-
-
-
-
-    

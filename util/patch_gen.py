@@ -1,8 +1,9 @@
 import numpy as np
 
+
 class PatchGenerator(object):
 
-    def __init__(self, H, W, patch_size=None, padding=16):
+    def __init__(self, H, W, patch_size = None, padding = 16):
         # assert H == W and H % 2 == 0
         self.H = H
         self.W = W

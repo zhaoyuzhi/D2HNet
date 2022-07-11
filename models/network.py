@@ -6,6 +6,7 @@ from models import dcn_module
 
 from util.singleton import Singleton
 
+
 # ----------------------------------------
 #         Initialize the networks
 # ----------------------------------------
@@ -110,7 +111,6 @@ class DeblurNet_v2(BaseModel):
 
         self.build_layers()
 
-
     def build_upsample_layer(self, in_channel, out_channel, upsample_level = None):
         if self.opt.upsample_layer == 'pixelshuffle':
             return PixelShuffleAlign(upscale_factor = 2, mode = self.opt.shuffle_mode)
@@ -204,7 +204,7 @@ class DenoiseNet_v2(BaseModel):
 
     def __init__(self, opt):
         super(DenoiseNet_v2, self).__init__(opt)
-        # self.downsample_chs = opt.downsample_chs
+        
         self.in_channel = opt.in_channel
         self.out_channel = opt.out_channel
         self.activ = opt.activ

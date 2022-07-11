@@ -6,17 +6,18 @@ from easydict import EasyDict as edict
 
 from trainer import Trainer, TwoPhaseTrainer
 
+
 def attatch_to_config(args, opt):
     opt.num_gpus = args.num_gpus
     opt.save_path = args.save_path
     opt.log_path = args.log_path
+
 
 if __name__ == "__main__":
 
     # ----------------------------------------
     #        Initialize the parameters
     # ----------------------------------------
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--opt', type = str, default = 'options/tp_denoisenet_v2_002.yaml', help = 'Path to option YAML file.')
     parser.add_argument('--num_gpus', type = int, default = 1, help = 'GPU numbers, 0 means cpu is used.')
@@ -30,10 +31,6 @@ if __name__ == "__main__":
     attatch_to_config(args, opt)
 
     print(opt)
-    
-    # ----------------------------------------
-    #                  Train
-    # ----------------------------------------
     
     trainer = TwoPhaseTrainer(opt = opt, num_gpus = opt.num_gpus)
     trainer.train()

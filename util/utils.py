@@ -1,14 +1,15 @@
+import os
+import torch
 import numpy as np
 import cv2
 import skimage
 import skimage.measure
-import torch
-import os
+
 
 # ----------------------------------------
 #    Validation and Sample at training
 # ----------------------------------------
-def save_sample_png(sample_folder, sample_name, img_list, name_list, pixel_max_cnt = 255, save_format="png"):
+def save_sample_png(sample_folder, sample_name, img_list, name_list, pixel_max_cnt = 255, save_format = 'png'):
     # Save image one-by-one
     for i in range(len(img_list)):
         img = img_list[i]
@@ -19,18 +20,17 @@ def save_sample_png(sample_folder, sample_name, img_list, name_list, pixel_max_c
         img_copy = np.clip(img_copy, 0, pixel_max_cnt)
         img_copy = img_copy.astype(np.uint8)
         # Save to certain path
-        if save_format == "jpg":
-            save_img_name = sample_name + '_' + name_list[i] + '.jpg'
-        elif save_format == "png":
-            save_img_name = sample_name + '_' + name_list[i] + '.png'
+        save_img_name = sample_name + '_' + name_list[i] + '.' + save_format
         save_img_path = os.path.join(sample_folder, save_img_name)
         cv2.imwrite(save_img_path, img_copy)
-        
+
+
 def psnr(pred, target, pixel_max_cnt = 255):
     mse = torch.mul(target - pred, target - pred)
     rmse_avg = (torch.mean(mse).item()) ** 0.5
     p = 20 * np.log10(pixel_max_cnt / rmse_avg)
     return p
+
 
 def grey_psnr(pred, target, pixel_max_cnt = 255):
     pred = torch.sum(pred, dim = 0)
@@ -40,6 +40,7 @@ def grey_psnr(pred, target, pixel_max_cnt = 255):
     p = 20 * np.log10(pixel_max_cnt * 3 / rmse_avg)
     return p
 
+
 def ssim(pred, target):
     pred = pred.clone().data.permute(0, 2, 3, 1).cpu().numpy()
     target = target.clone().data.permute(0, 2, 3, 1).cpu().numpy()
@@ -48,12 +49,14 @@ def ssim(pred, target):
     ssim = skimage.measure.compare_ssim(target, pred, multichannel = True)
     return ssim
 
+
 # ----------------------------------------
 #             PATH processing
 # ----------------------------------------
 def savetxt(name, loss_log):
     np_loss_log = np.array(loss_log)
     np.savetxt(name, np_loss_log)
+
 
 def get_files(path):
     # read a folder, return the complete path
@@ -63,6 +66,7 @@ def get_files(path):
             ret.append(os.path.join(root, filespath))
     return ret
 
+
 def get_jpgs(path):
     # read a folder, return the image name
     ret = []
@@ -70,6 +74,7 @@ def get_jpgs(path):
         for filespath in files:
             ret.append(filespath)
     return ret
+
 
 def get_jpgs_once(paths):
     # read a folder, return the image name
@@ -87,6 +92,7 @@ def get_jpgs_once(paths):
     ret = list(ret)
     return ret
 
+
 def get_blur_file_once(paths):
     # read a folder, return the image name
     ret = set([])
@@ -96,13 +102,13 @@ def get_blur_file_once(paths):
     for path in paths:
         for root, dirs, files in os.walk(path):
             for filespath in files:
-                filespath = filespath.split('_')[0] + '_' + filespath.split('_')[1] + '_' + \
-                    filespath.split('_')[2]
+                filespath = filespath.split('_')[0] + '_' + filespath.split('_')[1] + '_' + filespath.split('_')[2]
                 filespath = os.path.join(root, filespath)
                 if filespath not in ret:
                     ret.add(filespath)
     ret = list(ret)
     return ret
+
 
 def text_readlines(filename):
     # Try to read a txt file and return a list.Return [] if there was a mistake.
@@ -118,6 +124,7 @@ def text_readlines(filename):
     file.close()
     return content
 
+
 def text_save(content, filename, mode = 'a'):
     # save a list to a txt
     # Try to save a list variable in txt file.
@@ -126,12 +133,15 @@ def text_save(content, filename, mode = 'a'):
         file.write(str(content[i]) + '\n')
     file.close()
 
+
 def check_path(path):
     if not os.path.exists(path):
         os.makedirs(path)
 
+
 def check_file(path):
     return os.path.exists(path)
+
 
 def normalize_ImageNet_stats(batch):
     mean = torch.zeros_like(batch)
