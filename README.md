@@ -34,9 +34,7 @@ rm -rf build
 python setup.py build develop
 ```
 
-## 3 Dataset
-
-### 3.1 D2-Dataset
+## 3 D2-Dataset
 
 Users can find the full D2-Dataset through the [link](https://portland-my.sharepoint.com/:f:/g/personal/yzzhao2-c_my_cityu_edu_hk/EgAgxXmhdExEm53S5vlkfeABg5ACBcYxvcyr7gMDWzS0sw?e=EK1sKa). Just unzip each `zip` file in the corresponding path. Since the full dataset is quite large (about 555Gb), users may download seperated dataset, and the links are given below.
 
@@ -55,10 +53,6 @@ Users can find the full D2-Dataset through the [link](https://portland-my.sharep
 | Xiaomi_Mi_Note_10_photos | real captured long- and short-exposure photos | 4624x3472 | 28 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYshIGNbXwlBhAm_gx-uoVoBKqTxBBvXYkdvaCSpkWpCrw?e=GLDUhk) 2.45GB |
 
 Please unzip it in this path. Then, rename the full path to `data`.
-
-### 3.2 Image capturing tool (Andriod apk)
-
-To appear soon
 
 ## 4 Train
 
@@ -85,19 +79,19 @@ The `EnhanceNet` in the paper corresponds to the `DenoiseNet` in the code.
 
 Users may change some parameters in the `yaml` files to fit their machine and requirement:
 
-#### Training parameters:
+#### 4.2.1 Training parameters:
 - epochs: overall training epochs
 - train_batch_size: training batch size, where one batch denotes that selecting one training image
 - num_workers: the number of workers for training dataloader
 - start_idx: if the users continue the training process, please enter the previous number of trained epochs. Also, remember to change `finetune_path`
 - finetune_path: the path to load pre-trained weights
 
-#### Loss and Optimizer parameters:
+#### 4.2.2 Loss and Optimizer parameters:
 - VGGLoss / vgg_model_path: if users want to add the perceptual loss, please download VGG-16 officially pre-trained model: https://download.pytorch.org/models/vgg16-397923af.pth. Then, put it under `pretrained_models` folder. Otherwise, please comment out the `VGGLoss` in the `yaml` files
 - lr_g: learning rate of the network
 - lr_decrease_epoch / lr_decrease_factor: after every `lr_decrease_epoch`, the learning rate multiplies with `lr_decrease_factor`
 
-#### Dataset parameters:
+#### 4.2.3 Dataset parameters:
 - train_path: path to original synthetic training set (`original/train`)
 - val_path: path to original synthetic validation set (`original/val_no_overlap`)
 - train_sharp_path: path to sharpened training set (`sharpened/train`)
@@ -113,7 +107,7 @@ Users may change some parameters in the `yaml` files to fit their machine and re
 
 ### 4.3 D2HNet pre-trained models
 
-Users can download pre-trained models via this [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/ESpmAMBVXlpOl1bgD3i1DAQB2AmleZ-nHxxNjh2GmrguTg?e=mg6Ff6).
+Users can download pre-trained models via this [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EXhLnts53CBKlWAiQYZUVqwBKWwQO511cxu9Tojbz4FTiA?e=ge0kjb).
 
 Please unzip it in this path, you will get a folder named `snapshot`.
 
@@ -137,7 +131,93 @@ python realworld.py
 
 Resulting images will be automatically saved in the `results_real_photo`.
 
-## 6 Citation
+## 6 Image capturing tool (Andriod apk)
+
+Users may install the image capturing tool to collect paired long- and short-exposure images on their own smartphones. But an Andriod operating system is required.
+
+### 6.1 Andriod tool installation
+
+Simply install adb tool on the Ubuntu:
+
+```
+sudo apt-get install adb
+```
+
+Check whether the adb tool is successfully installed:
+
+```
+adb version
+```
+
+### 6.2 Apk installation
+
+#### 6.2.1 Preparation
+
+Firstly, make sure that your smartphone is connected to the computer (e.g., by USB). Users may plug and unplug the USB cable and find which device is your smartphone:
+
+```
+lsusb
+(plug your smartphone)
+lsusb
+```
+
+Create the ini file and write the id into it:
+
+```
+echo 0xfirst_part_of_your_smartphone_name > ~/.andriod/adb_usb.ini
+```
+
+e.g.,
+```
+echo 0x1f3a > ~/.andriod/adb_usb.ini
+```
+
+Then, add a configuration file on your computer:
+
+```
+nano /etc/udev/rules.d/51-andriod.rules
+```
+
+Enter the following information:
+
+```
+SUBSYSTEM=="usb", ATTRS{idVendor}=="first_part_of_your_smartphone_name" ATTRS{idProduct}=="second_part_of_your_smartphone_name", MODE="0666"
+```
+
+e.g.,
+```
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1f3a" ATTRS{idProduct}=="6001", MODE="0666"
+```
+
+Change the access permissions to the file:
+
+```
+sudo chmod 777 /etc/udev/rules.d/51-andriod.rules
+```
+
+Next, restart the USB service:
+
+```
+sudo service udev restart
+```
+
+Finally, restart the adb service and check the device:
+
+```
+adb kill-server
+sudp adb start-server
+adb devices
+```
+
+#### 6.2.2 Installation
+
+Users may download the provided apk via this [link](). Then, install the apk to your smartphone by running:
+
+```
+adb install path_to_apk
+```
+
+## 7 Citation
 
 If you find this work useful for your research, please cite:
 
@@ -157,6 +237,6 @@ If you find this work useful for your research, please cite:
 }
 ```
 
-## 7 Acknowledgement
+## 8 Acknowledgement
 
 This work has gone through ICCV, AAAI, and ECCV. We appreciate the works and suggestions from all reviewers and ACs. Part of the code is based on [MMEditing](https://github.com/open-mmlab/mmediting) and [LSFNet](https://github.com/JimmyChame/LSFNet).

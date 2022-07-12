@@ -94,7 +94,7 @@ class DeblurNet_v2(BaseModel):
 
     def __init__(self, opt):
         super(DeblurNet_v2, self).__init__(opt)
-        # self.downsample_chs = opt.downsample_chs
+        
         self.in_channel = opt.in_channel
         self.out_channel = opt.out_channel
         self.activ = opt.activ
@@ -374,44 +374,38 @@ class DenoiseNet_v2(BaseModel):
         long_fea5 = self.downsample_long_conv5(long_fea4)
 
         short_fea, offset_5 = self.upsample_alignblock5(short_fea5, long_fea5)
-        short_fea = torch.cat((short_fea, short_fea5), 1)   # resolution: 1/16
+        short_fea = torch.cat((short_fea, short_fea5), 1)           # resolution: 1/16
         short_fea = self.upsample_comb5(short_fea)
-        short_fea = self.upsample_resblock5(short_fea)      # resolution: 1/16
+        short_fea = self.upsample_resblock5(short_fea)              # resolution: 1/16
 
-        short_fea = self.upsample_conv4(short_fea)          # resolution: 1/8
+        short_fea = self.upsample_conv4(short_fea)                  # resolution: 1/8
         short_cut4, offset_4 = self.upsample_alignblock4(short_fea4, long_fea4, offset_5)
-        short_cut4 = torch.cat((short_cut4, short_fea4), 1) # resolution: 1/8
+        short_cut4 = torch.cat((short_cut4, short_fea4), 1)         # resolution: 1/8
         short_cut4 = self.upsample_comb4(short_cut4)
         short_cut4 = self.upsample_resblock4(short_cut4)
-        short_fea = torch.cat((short_fea, short_cut4), 1)   # resolution: 1/8
+        short_fea = torch.cat((short_fea, short_cut4), 1)           # resolution: 1/8
 
-        short_fea = self.upsample_conv3(short_fea)          # resolution: 1/4
+        short_fea = self.upsample_conv3(short_fea)                  # resolution: 1/4
         short_cut3, offset_3 = self.upsample_alignblock3(short_fea3, long_fea3, offset_4)
-        short_cut3 = torch.cat((short_cut3, short_fea3), 1) # resolution: 1/4
+        short_cut3 = torch.cat((short_cut3, short_fea3), 1)         # resolution: 1/4
         short_cut3 = self.upsample_comb3(short_cut3)
         short_cut3 = self.upsample_resblock3(short_cut3)
-        short_fea = torch.cat((short_fea, short_cut3), 1)   # resolution: 1/4
+        short_fea = torch.cat((short_fea, short_cut3), 1)           # resolution: 1/4
 
-        short_fea = self.upsample_conv2(short_fea)          # resolution: 1/2
+        short_fea = self.upsample_conv2(short_fea)                  # resolution: 1/2
         short_cut2, offset_2 = self.upsample_alignblock2(short_fea2, long_fea2, offset_3)
-        short_cut2 = torch.cat((short_cut2, short_fea2), 1) # resolution: 1/2
+        short_cut2 = torch.cat((short_cut2, short_fea2), 1)         # resolution: 1/2
         short_cut2 = self.upsample_comb2(short_cut2)
         short_cut2 = self.upsample_resblock2(short_cut2)
-        short_fea = torch.cat((short_fea, short_cut2), 1)   # resolution: 1/2
+        short_fea = torch.cat((short_fea, short_cut2), 1)           # resolution: 1/2
 
-        short_fea = self.upsample_conv1(short_fea)          # resolution: 1
+        short_fea = self.upsample_conv1(short_fea)                  # resolution: 1
         short_cut1, offset_1 = self.upsample_alignblock1(short_fea1, long_fea1, offset_2)
-        short_cut1 = torch.cat((short_cut1, short_fea1), 1) # resolution: 1
+        short_cut1 = torch.cat((short_cut1, short_fea1), 1)         # resolution: 1
         short_cut1 = self.upsample_comb1(short_cut1)
-        short_fea = torch.cat((short_fea, short_cut1), 1)   # resolution: 1
+        short_fea = torch.cat((short_fea, short_cut1), 1)           # resolution: 1
         short_fea = self.upsample_conv0(short_fea)
 
-        '''
-        short_feat = self.short_conv(short_img)
-        long_feat = self.long_conv(long_img)
-        deblur_out_feat = self.long_conv(deblur_out)
-        short_fea = short_fea + short_feat + long_feat + deblur_out_feat
-        '''
         sl = short_fea
 
         for i in range(self.denoise_res_num2):

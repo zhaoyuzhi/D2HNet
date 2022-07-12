@@ -231,8 +231,8 @@ if __name__ == "__main__":
         default = './snapshot/tp_denoisenet_v2_002/GNet/GNet-epoch-149.pkl', \
             help = 'Model path to load.')
     parser.add_argument('--src_path', type = str, \
-        #default = './data/Xiaomi_Mi_Note_10_photos', \
-        default = '/home/zyz/Documents/dataset/Xiaomi_Mi_Note_10_photos', \
+        default = './data/Xiaomi_Mi_Note_10_photos', \
+        #default = '/home/zyz/Documents/dataset/Xiaomi_Mi_Note_10_photos', \
             help = 'Image path to read.')
     parser.add_argument('--save_path', type = str, \
         default = './results_real_photo/tp_denoisenet_v2_002', \

@@ -224,7 +224,7 @@ if __name__ == "__main__":
         default = './data/original/val_no_overlap_noisy_', \
         #default = '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/data_1440p/original/val_no_overlap_noisy_', \
             help = 'Image path to read.')
-    parser.add_argument('--val_res', type = int, default = 1440, help = 'validation resolution')
+    parser.add_argument('--val_res', type = int, default = 1440, help = 'validation resolution.')
     parser.add_argument('--val_sharp_path', type = str, \
         default = './data/sharpened/val_no_overlap', \
         #default = '/media/zyz/Seagate Backup Plus Drive/D2HNet dataset/data_1440p/sharpened/val_no_overlap', \
@@ -233,12 +233,11 @@ if __name__ == "__main__":
         default = './results_validation/tp_denoisenet_v2_002', \
             help = 'Path to save images.')
     parser.add_argument('--num_gpus', type = int, default = 1, help = 'GPU number, 0 means cpu is used.')
-    parser.add_argument('--down_img_size', type = int, default = 1024, help = 'down_img_size')
     parser.add_argument('--enable_patch', type = bool, default = True, help = 'enable patch process, please set True if out of memory.')
     parser.add_argument('--patch_size', type = int, default = 1024, help = 'patch size.')
     parser.add_argument('--save_deblur', type = bool, default = False)
     parser.add_argument('--save_residual', type = bool, default = False)
-    parser.add_argument('--postfix', type = str, default = '_short', help = 'suffix of ground truth images')
+    parser.add_argument('--postfix', type = str, default = '_short', help = 'suffix of ground truth images.')
     args = parser.parse_args()
 
     TwoPhase_Val(args)
