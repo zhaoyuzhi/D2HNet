@@ -161,13 +161,20 @@ lsusb
 lsusb
 ```
 
+For instance, you will find your smartphone corresponds to the following information:
+```
+```
+
+#### 6.2.2 Configuration
+
 Create the ini file and write the id into it:
 
 ```
 echo 0xfirst_part_of_your_smartphone_name > ~/.andriod/adb_usb.ini
 ```
 
-e.g.,
+For instance:
+
 ```
 echo 0x1f3a > ~/.andriod/adb_usb.ini
 ```
@@ -184,7 +191,8 @@ Enter the following information:
 SUBSYSTEM=="usb", ATTRS{idVendor}=="first_part_of_your_smartphone_name" ATTRS{idProduct}=="second_part_of_your_smartphone_name", MODE="0666"
 ```
 
-e.g.,
+For instance:
+
 ```
 SUBSYSTEM=="usb", ATTRS{idVendor}=="1f3a" ATTRS{idProduct}=="6001", MODE="0666"
 ```
@@ -209,9 +217,9 @@ sudp adb start-server
 adb devices
 ```
 
-#### 6.2.2 Installation
+#### 6.2.3 Installation
 
-Users may download the provided apk via this [link](). Then, install the apk to your smartphone by running:
+Users may download the provided apk via this [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EehSW00c0NZBnTe1iMDtYPQBHTX0E19VPhZXL5bFfCB2ZQ?e=0dhVov). Then, install the apk to your smartphone by running:
 
 ```
 adb install path_to_apk
@@ -239,4 +247,8 @@ If you find this work useful for your research, please cite:
 
 ## 8 Acknowledgement
 
-This work has gone through ICCV, AAAI, and ECCV. We appreciate the works and suggestions from all reviewers and ACs. Part of the code is based on [MMEditing](https://github.com/open-mmlab/mmediting) and [LSFNet](https://github.com/JimmyChame/LSFNet).
+This work has gone through ICCV, AAAI, and ECCV. We appreciate the works and suggestions from all reviewers and area chairs. Part of the code is based on [MMEditing](https://github.com/open-mmlab/mmediting) and [LSFNet](https://github.com/JimmyChame/LSFNet).
+
+We thank Chao Wang in the SenseTime Research and Tetras.AI for helping capture the real-world photos. We thank Weile Liang in the SenseTime Research and Tetras.AI for developing the image capturing tool. We thank Dr. Qinbin Li and researchers in the AI imaging group of the SenseTime Research and Tetras.AI for early reviewing the paper.
+
+Please contact yzzhao2-c@my.cityu.edu.hk for further questions.
