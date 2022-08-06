@@ -1,10 +1,17 @@
 # D2HNet
 
+<br>Official PyTorch Implementation of the ECCV 2022 Paper<br>
+
+[Project](https://github.com/zhaoyuzhi/D2HNet) | [arXiv](https://arxiv.org/abs/2207.03294)
+
 ## 1 Introduction
 
-This project is a night image restoration framework called D2HNet by jointly denoising and deblurring successively captured long- and short-exposure images. To train and benchmark D2HNet, we create a large-scale D2-Dataset.
+This project is a night image restoration framework called D2HNet by jointly denoising and deblurring successively captured long- and short-exposure images. To train and benchmark D2HNet, we create a large-scale D2-Dataset. This repo contains training and evaluation code for the following paper:
 
-arxiv: https://arxiv.org/abs/2207.03294
+> [**D2HNet: Joint Denoising and Deblurring with Hierarchical Network for Robust Night Image Restoration**](https://github.com/zhaoyuzhi/D2HNet)<br>
+> Yuzhi Zhao<sup>1</sup>, Yongzhe Xu<sup>2</sup>, Qiong Yan<sup>2</sup>, Dingdong Yang<sup>2</sup>, Xuehui Wang<sup>3</sup>, Lai-Man Po<sup>1</sup><br>
+> 1 City University of Hong Kong, 2 SenseTime Research and Tetras.AI, 3 Shanghai Jiao Tong University<br>
+> *European Conference on Computer Vision (**ECCV**) 2022*<br>
 
 ![img1](./img/img1.png)
 
@@ -236,19 +243,12 @@ If you find this work useful for your research, please cite:
   journal={arXiv preprint arXiv:2207.03294},
   year={2022}
 }
-
-@inproceedings{zhao2022d2hnet,
-  title={D2HNet: Joint Denoising and Deblurring with Hierarchical Network for Robust Night Image Restoration},
-  author={Zhao, Yuzhi and Xu, Yongzhe and Yan, Qiong and Yang, Dingdong and Wang, Xuehui and Po, Lai-Man},
-  booktitle={European Conference on Computer Vision (ECCV)},
-  year={2022}
-}
 ```
 
 ## 8 Acknowledgement
 
-This work has gone through ICCV, AAAI, and ECCV. We appreciate the works and suggestions from all reviewers and area chairs. Part of the code is based on [MMEditing](https://github.com/open-mmlab/mmediting) and [LSFNet](https://github.com/JimmyChame/LSFNet).
+This work has gone through ICCV, AAAI, and ECCV. We appreciate the works and suggestions from all reviewers and area chairs. Part of the code is based on [MMEditing](https://github.com/open-mmlab/mmediting) and [LSFNet](https://github.com/JimmyChame/LSFNet). Thanks for their great works!
 
-We thank Chao Wang in the SenseTime Research and Tetras.AI for helping capture the real-world photos. We thank Weile Liang in the SenseTime Research and Tetras.AI for developing the image capturing tool. We thank Dr. Qinbin Li and researchers in the AI imaging group of the SenseTime Research and Tetras.AI for early reviewing the paper.
+We thank Chao Wang in the SenseTime Research and Tetras.AI for helping capture the real-world photos. We thank Weile Liang in the SenseTime Research and Tetras.AI for developing the Andriod image capturing tool. We thank Dr. Qinbin Li and researchers in the AI imaging group of the SenseTime Research and Tetras.AI for early reviewing the paper.
 
 Please contact yzzhao2-c@my.cityu.edu.hk for further questions.
