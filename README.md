@@ -10,7 +10,7 @@ This project is a night image restoration framework called D2HNet by jointly den
 
 > [**D2HNet: Joint Denoising and Deblurring with Hierarchical Network for Robust Night Image Restoration**](https://github.com/zhaoyuzhi/D2HNet)<br>
 > Yuzhi Zhao<sup>1</sup>, Yongzhe Xu<sup>2</sup>, Qiong Yan<sup>2</sup>, Dingdong Yang<sup>2</sup>, Xuehui Wang<sup>3</sup>, Lai-Man Po<sup>1</sup><br>
-> 1 City University of Hong Kong, 2 SenseTime Research and Tetras.AI, 3 Shanghai Jiao Tong University<br>
+> <sup>1</sup>City University of Hong Kong, <sup>2</sup>SenseTime Research and Tetras.AI, <sup>3</sup>Shanghai Jiao Tong University<br>
 > *European Conference on Computer Vision (**ECCV**) 2022*<br>
 
 ![img1](./img/img1.png)
@@ -26,7 +26,7 @@ conda env create -f environment.yml
 conda activate d2hnet
 ```
 
-Then, users need to install the deformable convolution module (thanks to previous [implementation1](https://github.com/xinntao/EDVR/tree/master/basicsr/models/ops/dcn) and [implementation2](https://github.com/JimmyChame/LSFNet/tree/master/dcn)) in the `d2hnet` environment by:
+Then, users need to install the deformable convolution module in the `d2hnet` environment by:
 
 ```bash
 cd dcn
@@ -47,19 +47,21 @@ Users can find the full D2-Dataset through the [link](https://portland-my.sharep
 
 | Name | Description | Resolution | Numbers | Link / Size |
 | ---- | ---- | :----: | :----: | :----: |
-| original/train | synthetic training tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EWJ09tx5QUdPrmvKM3Ne3m4B5J47MQVXHxutv_3_ARUh4A?e=ZKNWYG) 192GB |
+| original/train | synthetic `training` tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EWJ09tx5QUdPrmvKM3Ne3m4B5J47MQVXHxutv_3_ARUh4A?e=ZKNWYG) 192GB |
 | original/train_blur_patch | selected patch tuples by VarmapSelection from `train` | 1024x1024 | 9453 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYqegoikxoxJoxy-qKqTrU4BWwcBrwOcc0DLclfqSJzymw?e=qhHHeg) 99.0GB |
-| original/val | synthetic validation tuples from videos 1-13 | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EQum2_I9mL5MltdFXciztkwBhxf1o2qPDL3iNmkL20KdyQ?e=SLrdfj) 9.44GB |
-| original/val_no_overlap | synthetic validation tuples from videos 14-30 | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Edx1bBZ1znVNsDSbrLUub10BxGU72mfqO0tvNOIvS5XMRg?e=dxwm4X) 38.7GB |
+| original/val | synthetic `validation` tuples from videos 1-13 | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EQum2_I9mL5MltdFXciztkwBhxf1o2qPDL3iNmkL20KdyQ?e=SLrdfj) 9.44GB |
+| original/val_no_overlap | synthetic `validation` tuples from videos 14-30 | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Edx1bBZ1znVNsDSbrLUub10BxGU72mfqO0tvNOIvS5XMRg?e=dxwm4X) 38.7GB |
 | original/val_no_overlap_blur_patch | selected patch tuples by VarmapSelection from `val_no_overlap` | 1024x1024 | 99 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EbC3GB8PFitIvgo0SJbpj90BhFwimWmXqfcsmMl9j8gG0w?e=uwdMsZ) 1.11GB |
 | sharpened/train | MATLAB sharpened `train` tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Eeg_AdGiTAxGmmbaLBvwPcoBiExyxLylBqoUfppV18iFVw?e=nSeghK) 124GB |
 | sharpened/train_blur_patch | MATLAB sharpened `train_blur_patch` tuples | 1024x1024 | 9453 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EfaX81jkGFtLq1B1_p3eR2MBu37f92ziZuQCwOJCw8B5sw?e=zp8h2Y) 59.0GB |
 | sharpened/val | MATLAB sharpened `val` tuples | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EbAN8RMlvNhMmniGIVV-XmcBeMHojt3YaOFkn46Y3DRaXw?e=gQ0qa6) 6.08GB |
 | sharpened/val_no_overlap | MATLAB sharpened `val_no_overlap` tuples | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EUdc3tybG2dGiGkX8I8rxnoBZq0uGuA8o5KB95bBFoeDNw?e=CNvKKS) 23.2GB |
 | sharpened/val_no_overlap_blur_patch  | MATLAB sharpened `val_no_overlap_blur_patch` tuples | 1024x1024 | 99 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EV-dd99FPalEolcfoVasSCYBsPX0TeTuxMAiZBM0QIKvQA?e=QwEjB9) 659MB |
-| Xiaomi_Mi_Note_10_photos | real captured long- and short-exposure photos | 4624x3472 | 28 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYshIGNbXwlBhAm_gx-uoVoBKqTxBBvXYkdvaCSpkWpCrw?e=GLDUhk) 2.45GB |
+| Xiaomi_Mi_Note_10_photos | `real` captured long- and short-exposure photos | 4624x3472 | 28 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYshIGNbXwlBhAm_gx-uoVoBKqTxBBvXYkdvaCSpkWpCrw?e=GLDUhk) 2.45GB |
 
 Please unzip it in this path. Then, rename the full path to `data`.
+
+The list of all full-length original videos can be found in [original_video_list.txt](https://github.com/zhaoyuzhi/D2HNet/blob/main/original_video_list.txt), and [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html) can be used to batch download them. Note that only part of those videos are used to create the D2-Dataset.
 
 ## 4 Train
 
@@ -87,6 +89,7 @@ The `EnhanceNet` in the paper corresponds to the `DenoiseNet` in the code.
 Users may change some parameters in the `yaml` files to fit their machine and requirement:
 
 #### 4.2.1 Training parameters:
+
 - epochs: overall training epochs
 - train_batch_size: training batch size, where one batch denotes that selecting one training image
 - num_workers: the number of workers for training dataloader
@@ -94,11 +97,13 @@ Users may change some parameters in the `yaml` files to fit their machine and re
 - finetune_path: the path to load pre-trained weights
 
 #### 4.2.2 Loss and Optimizer parameters:
+
 - VGGLoss / vgg_model_path: if users want to add the perceptual loss, please download VGG-16 officially pre-trained model: https://download.pytorch.org/models/vgg16-397923af.pth. Then, put it under `pretrained_models` folder. Otherwise, please comment out the `VGGLoss` in the `yaml` files
 - lr_g: learning rate of the network
 - lr_decrease_epoch / lr_decrease_factor: after every `lr_decrease_epoch`, the learning rate multiplies with `lr_decrease_factor`
 
 #### 4.2.3 Dataset parameters:
+
 - train_path: path to original synthetic training set (`original/train`)
 - val_path: path to original synthetic validation set (`original/val_no_overlap`)
 - train_sharp_path: path to sharpened training set (`sharpened/train`)
