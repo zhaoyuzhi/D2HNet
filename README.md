@@ -13,7 +13,7 @@ This project is a night image restoration framework called D2HNet by jointly den
 > <sup>1</sup>City University of Hong Kong, <sup>2</sup>SenseTime Research and Tetras.AI, <sup>3</sup>Shanghai Jiao Tong University<br>
 > *European Conference on Computer Vision (**ECCV**) 2022*<br>
 
-![img1](./img/img1.png)
+![comparison](./img/comparison.png)
 
 ## 2 Dependency
 
@@ -43,6 +43,8 @@ python setup.py build develop
 
 ## 3 D2-Dataset
 
+### 3.1 Download links
+
 Users can find the full D2-Dataset through the [link](https://portland-my.sharepoint.com/:f:/g/personal/yzzhao2-c_my_cityu_edu_hk/EgAgxXmhdExEm53S5vlkfeABg5ACBcYxvcyr7gMDWzS0sw?e=EK1sKa). Just unzip each `zip` file in the corresponding path. Since the full dataset is quite large (about 555Gb), users may download seperated dataset, and the links are given below.
 
 | Name | Description | Resolution | Numbers | Link / Size |
@@ -60,6 +62,27 @@ Users can find the full D2-Dataset through the [link](https://portland-my.sharep
 | Xiaomi_Mi_Note_10_photos | `real` captured long- and short-exposure photos | 4624x3472 | 28 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYshIGNbXwlBhAm_gx-uoVoBKqTxBBvXYkdvaCSpkWpCrw?e=GLDUhk) 2.45GB |
 
 Please unzip it in this path. Then, rename the full path to `data`.
+
+### 3.2 Explanation
+
+![comparison](./img/data.png)
+
+The explanation of the data is shown in the above image. The full resolution above image can be found in the [arXiv](https://arxiv.org/abs/2207.03294) file. The naming method of D2-Dataset data can be summarized as:
+
+| Symbol in the above image | Name (keyword) of image files | Description |
+| :----: | :----: | :----: |
+| *l* | long8 | the long-exposure image of approximately 80ms exposure time |
+| *l* | long6 | the long-exposure image of approximately 60ms exposure time |
+| *l* | long4 | the long-exposure image of approximately 40ms exposure time |
+| *l* | long2 | the long-exposure image of approximately 20ms exposure time |
+| *l<sub>last<sub>* | long_last | the last frame of the long-exposure images |
+| N/A | quarter | the frame at the quartile position at vacancy (approximately 35ms), more approching to *l<sub>last<sub>* |
+| N/A | half | the frame at the center position at vacancy (approximately 35ms) |
+| N/A | 3quarter | the frame at the quartile position at vacancy (approximately 35ms), more approching to *s<sub>first<sub>* |
+| *s<sub>first<sub>* | short | the first frame of the short-exposure image |
+| *s* | short | the short-exposure image; in this work we directly use *s<sub>first<sub>* as *s* due to the very short exposure time |
+
+### 3.3 Corresponding videos
 
 The list of all full-length original videos can be found in [original_video_list.txt](https://github.com/zhaoyuzhi/D2HNet/blob/main/original_video_list.txt), and [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html) can be used to batch download them. Note that only part of those videos are used to create the D2-Dataset.
 
@@ -123,7 +146,7 @@ Users can download pre-trained models via this [link](https://portland-my.sharep
 
 Please unzip it in this path, you will get a folder named `snapshot`.
 
-## 5 Val and Test
+## 5 Validation and Testing
 
 ### 5.1 Validation
 
@@ -242,11 +265,13 @@ adb install path_to_apk
 If you find this work useful for your research, please cite:
 
 ```bash
-@article{zhao2022d2hnet,
-  title={D2HNet: Joint Denoising and Deblurring with Hierarchical Network for Robust Night Image Restoration},
+@inproceedings{zhao2022d2hnet,
+  title={D2hnet: Joint denoising and deblurring with hierarchical network for robust night image restoration},
   author={Zhao, Yuzhi and Xu, Yongzhe and Yan, Qiong and Yang, Dingdong and Wang, Xuehui and Po, Lai-Man},
-  journal={arXiv preprint arXiv:2207.03294},
-  year={2022}
+  booktitle={17th European Conference on Computer Vision (ECCV)},
+  pages={91--110},
+  year={2022},
+  organization={Springer}
 }
 ```
 
