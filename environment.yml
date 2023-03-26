@@ -108,4 +108,3 @@ dependencies:
     - werkzeug==2.0.3
     - wrapt==1.12.1
     - zipp==3.6.0
-prefix: /home/zyz/.conda/envs/d2hnet

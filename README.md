@@ -13,7 +13,7 @@ This project is a night image restoration framework called D2HNet by jointly den
 > <sup>1</sup>City University of Hong Kong, <sup>2</sup>SenseTime Research and Tetras.AI, <sup>3</sup>Shanghai Jiao Tong University<br>
 > *European Conference on Computer Vision (**ECCV**) 2022*<br>
 
-![comparison](./img/comparison.png)
+![comparison](./assets/comparison.png)
 
 ## 2 Dependency
 
@@ -65,7 +65,7 @@ Please unzip it in this path. Then, rename the full path to `data`.
 
 ### 3.2 Explanation
 
-![comparison](./img/data.png)
+![comparison](./assets/data.png)
 
 The explanation of the data is shown in the above image. The full resolution above image can be found in the [arXiv](https://arxiv.org/abs/2207.03294) file. The naming method of D2-Dataset data can be summarized as:
 
@@ -76,15 +76,15 @@ The explanation of the data is shown in the above image. The full resolution abo
 | *l* | long4 | the long-exposure image of approximately 40ms exposure time |
 | *l* | long2 | the long-exposure image of approximately 20ms exposure time |
 | *l<sub>last<sub>* | long_last | the last frame of the long-exposure images |
-| N/A | quarter | the frame at the quartile position at vacancy (approximately 35ms), more approching to *l<sub>last<sub>* |
-| N/A | half | the frame at the center position at vacancy (approximately 35ms) |
-| N/A | 3quarter | the frame at the quartile position at vacancy (approximately 35ms), more approching to *s<sub>first<sub>* |
+| *v<sub>quarter<sub>* | quarter | the frame at the quartile position at vacancy (approximately 35ms), more approching to *l<sub>last<sub>* |
+| *v<sub>half<sub>* | half | the frame at the center position at vacancy (approximately 35ms) |
+| *v<sub>3quarter<sub>* | 3quarter | the frame at the quartile position at vacancy (approximately 35ms), more approching to *s<sub>first<sub>* |
 | *s<sub>first<sub>* | short | the first frame of the short-exposure image |
 | *s* | short | the short-exposure image; in this work we directly use *s<sub>first<sub>* as *s* due to the very short exposure time |
 
 ### 3.3 Corresponding videos
 
-The list of all full-length original videos can be found in [original_video_list.txt](https://github.com/zhaoyuzhi/D2HNet/blob/main/original_video_list.txt), and [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html) can be used to batch download them. Note that only part of those videos are used to create the D2-Dataset.
+The list of all full-length original videos can be found in [original_video_list.txt](./assets/original_video_list.txt), and [youtube-dl](https://ytdl-org.github.io/youtube-dl/index.html) can be used to batch download them. Note that only part of those videos are used to create the D2-Dataset.
 
 ## 4 Train
 
