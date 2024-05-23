@@ -45,21 +45,24 @@ python setup.py build develop
 
 ### 3.1 Download links
 
-Users can find the full D2-Dataset through the [link](https://portland-my.sharepoint.com/:f:/g/personal/yzzhao2-c_my_cityu_edu_hk/EgAgxXmhdExEm53S5vlkfeABg5ACBcYxvcyr7gMDWzS0sw?e=EK1sKa). Just unzip each `zip` file in the corresponding path. Since the full dataset is quite large (about 555Gb), users may download seperated dataset, and the links are given below.
+Users can find the full D2-Dataset through the link below. Just unzip all `zip` files after downloading. Note that the full dataset is quite large (about 555Gb).
 
-| Name | Description | Resolution | Numbers | Link / Size |
+link：https://pan.baidu.com/s/1FunrgUvjdOyhz0hgBuW3JQ?pwd=3n6m 
+code：3n6m
+
+| Name | Description | Resolution | Numbers | Size |
 | ---- | ---- | :----: | :----: | :----: |
-| original/train | synthetic `training` tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EWJ09tx5QUdPrmvKM3Ne3m4B5J47MQVXHxutv_3_ARUh4A?e=ZKNWYG) 192GB |
-| original/train_blur_patch | selected patch tuples by VarmapSelection from `train` | 1024x1024 | 9453 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYqegoikxoxJoxy-qKqTrU4BWwcBrwOcc0DLclfqSJzymw?e=qhHHeg) 99.0GB |
-| original/val | synthetic `validation` tuples from videos 1-13 | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EQum2_I9mL5MltdFXciztkwBhxf1o2qPDL3iNmkL20KdyQ?e=SLrdfj) 9.44GB |
-| original/val_no_overlap | synthetic `validation` tuples from videos 14-30 | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Edx1bBZ1znVNsDSbrLUub10BxGU72mfqO0tvNOIvS5XMRg?e=dxwm4X) 38.7GB |
-| original/val_no_overlap_blur_patch | selected patch tuples by VarmapSelection from `val_no_overlap` | 1024x1024 | 99 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EbC3GB8PFitIvgo0SJbpj90BhFwimWmXqfcsmMl9j8gG0w?e=uwdMsZ) 1.11GB |
-| sharpened/train | MATLAB sharpened `train` tuples | 2560x1440 | 5661 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/Eeg_AdGiTAxGmmbaLBvwPcoBiExyxLylBqoUfppV18iFVw?e=nSeghK) 124GB |
-| sharpened/train_blur_patch | MATLAB sharpened `train_blur_patch` tuples | 1024x1024 | 9453 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EfaX81jkGFtLq1B1_p3eR2MBu37f92ziZuQCwOJCw8B5sw?e=zp8h2Y) 59.0GB |
-| sharpened/val | MATLAB sharpened `val` tuples | 2560x1440 | 268 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EbAN8RMlvNhMmniGIVV-XmcBeMHojt3YaOFkn46Y3DRaXw?e=gQ0qa6) 6.08GB |
-| sharpened/val_no_overlap | MATLAB sharpened `val_no_overlap` tuples | 2560x1440 | 1192 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EUdc3tybG2dGiGkX8I8rxnoBZq0uGuA8o5KB95bBFoeDNw?e=CNvKKS) 23.2GB |
-| sharpened/val_no_overlap_blur_patch  | MATLAB sharpened `val_no_overlap_blur_patch` tuples | 1024x1024 | 99 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EV-dd99FPalEolcfoVasSCYBsPX0TeTuxMAiZBM0QIKvQA?e=QwEjB9) 659MB |
-| Xiaomi_Mi_Note_10_photos | `real` captured long- and short-exposure photos | 4624x3472 | 28 | [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EYshIGNbXwlBhAm_gx-uoVoBKqTxBBvXYkdvaCSpkWpCrw?e=GLDUhk) 2.45GB |
+| original/train | synthetic `training` tuples | 2560x1440 | 5661 | 192GB |
+| original/train_blur_patch | selected patch tuples by VarmapSelection from `train` | 1024x1024 | 9453 | 99.0GB |
+| original/val | synthetic `validation` tuples from videos 1-13 | 2560x1440 | 268 | 9.44GB |
+| original/val_no_overlap | synthetic `validation` tuples from videos 14-30 | 2560x1440 | 1192 | 38.7GB |
+| original/val_no_overlap_blur_patch | selected patch tuples by VarmapSelection from `val_no_overlap` | 1024x1024 | 99 | 1.11GB |
+| sharpened/train | MATLAB sharpened `train` tuples | 2560x1440 | 5661 | 124GB |
+| sharpened/train_blur_patch | MATLAB sharpened `train_blur_patch` tuples | 1024x1024 | 9453 | 59.0GB |
+| sharpened/val | MATLAB sharpened `val` tuples | 2560x1440 | 268 | 6.08GB |
+| sharpened/val_no_overlap | MATLAB sharpened `val_no_overlap` tuples | 2560x1440 | 1192 | 23.2GB |
+| sharpened/val_no_overlap_blur_patch  | MATLAB sharpened `val_no_overlap_blur_patch` tuples | 1024x1024 | 99 | 659MB |
+| Xiaomi_Mi_Note_10_photos | `real` captured long- and short-exposure photos | 4624x3472 | 28 | 2.45GB |
 
 Please unzip it in this path. Then, rename the full path to `data`.
 
@@ -142,7 +145,10 @@ Users may change some parameters in the `yaml` files to fit their machine and re
 
 ### 4.3 D2HNet pre-trained models
 
-Users can download pre-trained models via this [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EXhLnts53CBKlWAiQYZUVqwBKWwQO511cxu9Tojbz4FTiA?e=ge0kjb).
+Users can download pre-trained models via the link below:
+
+link：https://pan.baidu.com/s/1bLyM1aKbFBVvYwmEJyBv2w?pwd=t7wq 
+code：t7wq
 
 Please unzip it in this path, you will get a folder named `snapshot`.
 
@@ -254,7 +260,12 @@ adb devices
 
 #### 6.2.3 Installation
 
-Users may download the provided apk via this [link](https://portland-my.sharepoint.com/:u:/g/personal/yzzhao2-c_my_cityu_edu_hk/EehSW00c0NZBnTe1iMDtYPQBHTX0E19VPhZXL5bFfCB2ZQ?e=0dhVov). Then, install the apk to your smartphone by running:
+Users may download the provided apk via the link below:
+
+link：https://pan.baidu.com/s/17exe6zbYzJvu-adDyjRznw?pwd=qhkl 
+code：qhkl
+
+Then, install the apk to your smartphone by running:
 
 ```
 adb install path_to_apk
